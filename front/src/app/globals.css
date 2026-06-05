@@ -1,0 +1,707 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  scroll-behavior: smooth;
+}
+
+/* Skeleton loading styles */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeletonLoading 1.5s infinite;
+}
+
+.skeleton-dark {
+  background: linear-gradient(90deg, #2a2a2a 25%, #1a1a1a 50%, #2a2a2a 75%);
+  background-size: 200% 100%;
+  animation: skeletonLoading 1.5s infinite;
+}
+
+@keyframes skeletonLoading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Loading fade-in effect */
+.content-fade-in {
+  animation: contentFadeIn 0.4s ease-out forwards;
+}
+
+@keyframes contentFadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(5px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+/* GLITCH LANGUAGE TRANSITION EFFECTS */
+.language-transition {
+  transition: none; /* No smooth transitions - pure glitch */
+  transform: translateZ(0);
+}
+
+.language-transition.transitioning {
+  animation: 
+    glitchMain 0.3s steps(10) infinite,
+    rgbShift 0.3s steps(5) infinite,
+    digitalNoise 0.3s steps(8) infinite;
+}
+
+/* Main glitch effect */
+@keyframes glitchMain {
+  0%, 100% { 
+    transform: translate(0, 0) scaleX(1) scaleY(1);
+    filter: hue-rotate(0deg);
+  }
+  10% { 
+    transform: translate(-2px, 1px) scaleX(0.99) scaleY(1.01);
+    filter: hue-rotate(90deg);
+  }
+  20% { 
+    transform: translate(3px, -1px) scaleX(1.01) scaleY(0.99);
+    filter: hue-rotate(180deg);
+  }
+  30% { 
+    transform: translate(-1px, 2px) scaleX(0.98) scaleY(1.02);
+    filter: hue-rotate(270deg);
+  }
+  40% { 
+    transform: translate(2px, -2px) scaleX(1.02) scaleY(0.98);
+    filter: hue-rotate(45deg);
+  }
+  50% { 
+    transform: translate(-3px, 1px) scaleX(0.97) scaleY(1.03);
+    filter: hue-rotate(135deg);
+  }
+  60% { 
+    transform: translate(1px, -3px) scaleX(1.03) scaleY(0.97);
+    filter: hue-rotate(225deg);
+  }
+  70% { 
+    transform: translate(-2px, 2px) scaleX(0.99) scaleY(1.01);
+    filter: hue-rotate(315deg);
+  }
+  80% { 
+    transform: translate(3px, -1px) scaleX(1.01) scaleY(0.99);
+    filter: hue-rotate(60deg);
+  }
+  90% { 
+    transform: translate(-1px, 1px) scaleX(0.98) scaleY(1.02);
+    filter: hue-rotate(120deg);
+  }
+}
+
+/* RGB Shift effect */
+@keyframes rgbShift {
+  0%, 100% { 
+    text-shadow: none;
+    box-shadow: none;
+  }
+  25% { 
+    text-shadow: 
+      -2px 0 0 #ff0000,
+      2px 0 0 #00ffff;
+    box-shadow: 
+      -2px 0 0 rgba(255, 0, 0, 0.3),
+      2px 0 0 rgba(0, 255, 255, 0.3);
+  }
+  50% { 
+    text-shadow: 
+      2px 0 0 #ff0000,
+      -2px 0 0 #00ff00;
+    box-shadow: 
+      2px 0 0 rgba(255, 0, 0, 0.3),
+      -2px 0 0 rgba(0, 255, 0, 0.3);
+  }
+  75% { 
+    text-shadow: 
+      -1px 0 0 #ff0000,
+      1px 0 0 #0000ff;
+    box-shadow: 
+      -1px 0 0 rgba(255, 0, 0, 0.3),
+      1px 0 0 rgba(0, 0, 255, 0.3);
+  }
+}
+
+/* Digital noise effect */
+@keyframes digitalNoise {
+  0%, 100% { opacity: 1; }
+  10% { opacity: 0.8; }
+  20% { opacity: 1; }
+  30% { opacity: 0.6; }
+  40% { opacity: 1; }
+  50% { opacity: 0.9; }
+  60% { opacity: 1; }
+  70% { opacity: 0.7; }
+  80% { opacity: 1; }
+  90% { opacity: 0.85; }
+}
+
+/* Prevent layout shift during transitions */
+body {
+  overflow-x: hidden;
+}
+
+/* GLITCH TEXT EFFECTS */
+.language-transition.transitioning h1,
+.language-transition.transitioning h2,
+.language-transition.transitioning h3 {
+  animation: 
+    textGlitch 0.3s steps(6) infinite,
+    textCorruption 0.3s steps(4) infinite;
+}
+
+.language-transition.transitioning p,
+.language-transition.transitioning span,
+.language-transition.transitioning a {
+  animation: 
+    textFlicker 0.3s steps(8) infinite,
+    dataCorrupt 0.3s steps(5) infinite;
+}
+
+/* Text glitch animation */
+@keyframes textGlitch {
+  0%, 100% { 
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  20% { 
+    transform: translate(-1px, 1px);
+    opacity: 0.8;
+  }
+  40% { 
+    transform: translate(1px, -1px);
+    opacity: 0.9;
+  }
+  60% { 
+    transform: translate(-1px, -1px);
+    opacity: 0.7;
+  }
+  80% { 
+    transform: translate(1px, 1px);
+    opacity: 0.85;
+  }
+}
+
+/* Text corruption effect */
+@keyframes textCorruption {
+  0%, 100% { 
+    text-shadow: none;
+    letter-spacing: 0;
+  }
+  25% { 
+    text-shadow: 
+      -1px 0 0 #ff0040,
+      1px 0 0 #00ffff;
+    letter-spacing: 0.1em;
+  }
+  50% { 
+    text-shadow: 
+      1px 0 0 #ff0040,
+      -1px 0 0 #40ff00;
+    letter-spacing: -0.05em;
+  }
+  75% { 
+    text-shadow: 
+      -1px 0 0 #0040ff,
+      1px 0 0 #ff4000;
+    letter-spacing: 0.08em;
+  }
+}
+
+/* Text flicker for smaller elements */
+@keyframes textFlicker {
+  0%, 100% { opacity: 1; }
+  20% { opacity: 0.4; }
+  40% { opacity: 1; }
+  60% { opacity: 0.6; }
+  80% { opacity: 1; }
+}
+
+/* Data corruption effect */
+@keyframes dataCorrupt {
+  0%, 100% { 
+    filter: none;
+    transform: scaleX(1);
+  }
+  33% { 
+    filter: contrast(2) brightness(0.5);
+    transform: scaleX(0.98);
+  }
+  66% { 
+    filter: contrast(0.5) brightness(1.5);
+    transform: scaleX(1.02);
+  }
+}
+
+button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* KATANA GLITCH BUTTON */
+.lang-button {
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+  transform: translateZ(0);
+  margin-left: 1rem; /* Add margin to separate from other nav items */
+}
+
+.lang-button:hover {
+  transform: scale(1.05) translateZ(0);
+  text-shadow: 
+    -1px 0 0 #ff0040,
+    1px 0 0 #00ffff;
+}
+
+.lang-button:active {
+  transform: scale(0.95) translateZ(0);
+}
+
+.lang-button:disabled {
+  cursor: not-allowed;
+  animation: 
+    katanaGlitch 0.3s steps(8) infinite,
+    buttonCorrupt 0.3s steps(6) infinite;
+}
+
+/* Katana slash glitch */
+@keyframes katanaGlitch {
+  0%, 100% { 
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    border-color: currentColor;
+  }
+  12.5% { 
+    transform: translate(-1px, 1px) rotate(-0.5deg) scale(1.02);
+    border-color: #ff0040;
+  }
+  25% { 
+    transform: translate(2px, -1px) rotate(0.3deg) scale(0.98);
+    border-color: #00ffff;
+  }
+  37.5% { 
+    transform: translate(-2px, -1px) rotate(-0.2deg) scale(1.01);
+    border-color: #40ff00;
+  }
+  50% { 
+    transform: translate(1px, 2px) rotate(0.4deg) scale(0.99);
+    border-color: #ff4000;
+  }
+  62.5% { 
+    transform: translate(-1px, -2px) rotate(-0.3deg) scale(1.02);
+    border-color: #0040ff;
+  }
+  75% { 
+    transform: translate(2px, 1px) rotate(0.2deg) scale(0.98);
+    border-color: #ff0080;
+  }
+  87.5% { 
+    transform: translate(-2px, 1px) rotate(-0.4deg) scale(1.01);
+    border-color: #80ff00;
+  }
+}
+
+/* Button corruption */
+@keyframes buttonCorrupt {
+  0%, 100% { 
+    text-shadow: none;
+    box-shadow: none;
+    filter: none;
+  }
+  20% { 
+    text-shadow: 
+      -2px 0 0 #ff0040,
+      2px 0 0 #00ffff;
+    box-shadow: 
+      0 0 10px rgba(255, 0, 64, 0.5);
+    filter: hue-rotate(90deg);
+  }
+  40% { 
+    text-shadow: 
+      2px 0 0 #40ff00,
+      -2px 0 0 #ff4000;
+    box-shadow: 
+      0 0 10px rgba(64, 255, 0, 0.5);
+    filter: hue-rotate(180deg);
+  }
+  60% { 
+    text-shadow: 
+      -1px 0 0 #0040ff,
+      1px 0 0 #ff0080;
+    box-shadow: 
+      0 0 10px rgba(0, 64, 255, 0.5);
+    filter: hue-rotate(270deg);
+  }
+  80% { 
+    text-shadow: 
+      1px 0 0 #80ff00,
+      -1px 0 0 #ff8000;
+    box-shadow: 
+      0 0 10px rgba(128, 255, 0, 0.5);
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Glitch slash effect instead of shimmer */
+.lang-button:disabled::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg, 
+    transparent, 
+    rgba(255, 0, 64, 0.4), 
+    rgba(0, 255, 255, 0.4),
+    transparent
+  );
+  animation: katanaSlash 0.6s steps(4) infinite;
+}
+
+/* Katana slash animation */
+@keyframes katanaSlash {
+  0% { 
+    left: -100%;
+    top: 0;
+    transform: rotate(45deg);
+  }
+  25% { 
+    left: -50%;
+    top: -10px;
+    transform: rotate(42deg);
+  }
+  50% { 
+    left: 0%;
+    top: 0;
+    transform: rotate(48deg);
+  }
+  75% { 
+    left: 50%;
+    top: -5px;
+    transform: rotate(45deg);
+  }
+  100% { 
+    left: 100%;
+    top: 0;
+    transform: rotate(45deg);
+  }
+}
+
+/* Terminal-style glitch data corruption */
+.lang-button:disabled::before {
+  content: '⚡⚔️';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 0.7em;
+  animation: 
+    terminalGlitch 0.4s steps(6) infinite,
+    colorCycle 0.3s steps(3) infinite;
+  pointer-events: none;
+}
+
+@keyframes terminalGlitch {
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  16% { 
+    opacity: 0.3;
+    transform: scale(1.2) rotate(15deg);
+  }
+  33% { 
+    opacity: 1;
+    transform: scale(0.8) rotate(-10deg);
+  }
+  50% { 
+    opacity: 0.6;
+    transform: scale(1.1) rotate(5deg);
+  }
+  66% { 
+    opacity: 1;
+    transform: scale(0.9) rotate(-15deg);
+  }
+  83% { 
+    opacity: 0.8;
+    transform: scale(1.3) rotate(10deg);
+  }
+}
+
+@keyframes colorCycle {
+  0% { color: #ff0040; }
+  33% { color: #00ffff; }
+  66% { color: #40ff00; }
+  100% { color: #ff0040; }
+}
+
+/* Card and section animations during transition */
+.language-transition.transitioning .ktn-card,
+.language-transition.transitioning article,
+.language-transition.transitioning section {
+  transform: translateY(-8px) scale(0.99);
+  opacity: 0.4;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.05s;
+}
+
+/* Navbar special animation */
+.language-transition.transitioning.ktn-nav {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* GLITCH CARD & SECTION EFFECTS */
+.language-transition.transitioning .ktn-card,
+.language-transition.transitioning article,
+.language-transition.transitioning section {
+  animation: 
+    cardGlitch 0.3s steps(5) infinite,
+    dataCorruption 0.3s steps(4) infinite;
+}
+
+@keyframes cardGlitch {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+    border-color: currentColor;
+  }
+  25% { 
+    transform: translate(-1px, 1px) scale(0.998);
+    border-color: #ff0040;
+  }
+  50% { 
+    transform: translate(1px, -1px) scale(1.002);
+    border-color: #00ffff;
+  }
+  75% { 
+    transform: translate(-1px, -1px) scale(0.999);
+    border-color: #40ff00;
+  }
+}
+
+@keyframes dataCorruption {
+  0%, 100% { 
+    opacity: 1;
+    filter: none;
+  }
+  20% { 
+    opacity: 0.85;
+    filter: contrast(1.2) brightness(0.9);
+  }
+  40% { 
+    opacity: 0.9;
+    filter: contrast(0.8) brightness(1.1);
+  }
+  60% { 
+    opacity: 0.8;
+    filter: contrast(1.1) brightness(0.95);
+  }
+  80% { 
+    opacity: 0.95;
+    filter: contrast(0.9) brightness(1.05);
+  }
+}
+
+/* Hero glitch - terminal boot sequence style */
+.language-transition.transitioning .hero,
+.language-transition.transitioning .heroGrid {
+  animation: 
+    heroTerminalGlitch 0.3s steps(8) infinite,
+    scanlines 0.3s linear infinite;
+}
+
+@keyframes heroTerminalGlitch {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+    filter: none;
+  }
+  12.5% { 
+    transform: translate(-2px, 0) scale(1.001);
+    filter: hue-rotate(45deg);
+  }
+  25% { 
+    transform: translate(2px, -1px) scale(0.999);
+    filter: hue-rotate(90deg);
+  }
+  37.5% { 
+    transform: translate(-1px, 1px) scale(1.001);
+    filter: hue-rotate(135deg);
+  }
+  50% { 
+    transform: translate(1px, -2px) scale(0.998);
+    filter: hue-rotate(180deg);
+  }
+  62.5% { 
+    transform: translate(-2px, 0) scale(1.002);
+    filter: hue-rotate(225deg);
+  }
+  75% { 
+    transform: translate(0, 1px) scale(0.999);
+    filter: hue-rotate(270deg);
+  }
+  87.5% { 
+    transform: translate(1px, -1px) scale(1.001);
+    filter: hue-rotate(315deg);
+  }
+}
+
+/* Terminal scanlines effect */
+@keyframes scanlines {
+  0% { 
+    background-image: linear-gradient(
+      90deg, 
+      transparent 98%, 
+      rgba(0, 255, 255, 0.1) 100%
+    );
+  }
+  25% { 
+    background-image: linear-gradient(
+      90deg, 
+      transparent 98%, 
+      rgba(255, 0, 64, 0.1) 100%
+    );
+  }
+  50% { 
+    background-image: linear-gradient(
+      90deg, 
+      transparent 98%, 
+      rgba(64, 255, 0, 0.1) 100%
+    );
+  }
+  75% { 
+    background-image: linear-gradient(
+      90deg, 
+      transparent 98%, 
+      rgba(255, 64, 0, 0.1) 100%
+    );
+  }
+  100% { 
+    background-image: linear-gradient(
+      90deg, 
+      transparent 98%, 
+      rgba(0, 255, 255, 0.1) 100%
+    );
+  }
+}
+
+/* Performance optimizations */
+.language-transition,
+.lang-button,
+h1, h2, h3, p, span, a {
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Safe Mode Accessibility Styles */
+body.safe-mode {
+  /* Disable all animations and transitions */
+  * {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+  
+  /* Disable glitch effects */
+  .ktn-glitch::before,
+  .ktn-glitch::after {
+    display: none !important;
+  }
+  
+  /* Disable hover effects that might cause rapid changes */
+  .ktn-link:hover,
+  .ktn-btn:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Disable background animations */
+  .scanline-overlay,
+  .scanlines {
+    display: none !important;
+  }
+  
+  /* Disable any pulsing or flashing effects */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+  }
+  
+  @keyframes glow {
+    0%, 100% { filter: none; }
+  }
+  
+  @keyframes shimmer {
+    0%, 100% { transform: none; }
+  }
+  
+  /* Reduce contrast and saturation for easier viewing */
+  .ktn-scope {
+    filter: contrast(0.8) saturate(0.7);
+  }
+  
+  /* Ensure stable text rendering */
+  .ktn-glitch {
+    text-shadow: none !important;
+  }
+  
+  /* Disable any flashing status indicators */
+  .status-indicator,
+  .blinking {
+    animation: none !important;
+  }
+}
+
+/* Additional safe mode styles for specific components */
+body.safe-mode .skill-chip {
+  animation: none !important;
+  transform: none !important;
+}
+
+body.safe-mode .timeline-item {
+  animation: none !important;
+}
+
+body.safe-mode .floating-element {
+  animation: none !important;
+}
+
+body.safe-mode .particle-effect {
+  display: none !important;
+}
+
+body.safe-mode .typing-effect {
+  animation: none !important;
+}
+
+/* Ensure readability in safe mode */
+body.safe-mode .text-gradient {
+  background: none !important;
+  color: inherit !important;
+}

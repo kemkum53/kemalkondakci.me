@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  # ============ Backend testleri (FastAPI / pytest) ============
+  # Testler SQLite kullaniyor, gercek Postgres GEREKMEZ -> servis container yok.
+  test-api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api      # bu job'taki 'run' adimlari api/ icinde calissin
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"        # Dockerfile ile ayni surum
+          cache: pip
+          cache-dependency-path: api/requirements-dev.txt
+
+      - name: Bagimliliklari kur
+        run: pip install -r requirements-dev.txt
+
+      - name: Testleri calistir (pytest)
+        run: pytest
+
+  # ============ Frontend testleri (Next.js / vitest) ============
+  test-front:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./front
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: front/package-lock.json
+
+      - name: Bagimliliklari kur
+        run: npm ci
+
+      - name: Testleri calistir (vitest)
+        run: npm run test
+
+  # ============ api image build (test-api gecince) ============
+  # Su an SADECE build (push YOK). Server'a baglayinca buraya GHCR push eklenecek.
+  build-api:
+    runs-on: ubuntu-latest
+    needs: test-api                     # api testleri gecmeden build yok
+    steps:
+      - uses: actions/checkout@v4
+      - name: api image build et
+        run: docker build -t kemalkondakci-api:ci ./api
+
+  # ============ front image build (test-front gecince) ============
+  build-front:
+    runs-on: ubuntu-latest
+    needs: test-front
+    steps:
+      - uses: actions/checkout@v4
+      - name: front image build et
+        run: docker build -t kemalkondakci-front:ci ./front

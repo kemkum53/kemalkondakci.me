@@ -1,0 +1,43 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# --- Node / Next.js (front/) ---
+node_modules/
+.pnp
+.pnp.*
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+# TinyMCE (build sırasında front/public/'e kopyalanır)
+front/public/tinymce
+
+# --- Python (api/) ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# --- Yüklenen görseller (yerel; üretimde Docker volume) ---
+api/uploads/
+
+# --- Env dosyaları (sırlar) — ama .example'lar commit'lenir ---
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# --- Çeşitli ---
+.DS_Store
+*.pem
+coverage/
+.vercel
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.tar
+*.tar.gz
+logs/

@@ -1,0 +1,72 @@
+services:
+  # PostgreSQL — sadece iç ağda, dışarı kapalı
+  db:
+    image: postgres:16-alpine
+    container_name: kemalkondakci-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-blog}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-blog}
+      - POSTGRES_DB=${POSTGRES_DB:-blog}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-blog}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # FastAPI backend — iç ağda, dışarı kapalı (Next BFF üzerinden erişilir)
+  api:
+    build: ./api
+    container_name: kemalkondakci-api
+    restart: unless-stopped
+    # JWT_SECRET ve ADMIN_* gibi `$` içerebilen sırlar env_file ile (literal) gelir
+    env_file:
+      - ./api/.env
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER:-blog}:${POSTGRES_PASSWORD:-blog}@db:5432/${POSTGRES_DB:-blog}
+      - UPLOADS_DIR=/app/uploads
+      - CORS_ORIGINS=["https://kemalkondakci.me"]
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - internal
+
+  # Next.js frontend (BFF) — Traefik tarafından dışarı açılan tek servis
+  front:
+    build: ./front
+    container_name: kemalkondakci-front
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - API_URL=http://api:8000
+      - SESSION_SECRET=${SESSION_SECRET}
+      - COOKIE_SECURE=true
+    depends_on:
+      - api
+    networks:
+      - internal
+      - traefik_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kemalkondakci.rule=Host(`kemalkondakci.me`)"
+      - "traefik.http.routers.kemalkondakci.entrypoints=websecure"
+      - "traefik.http.routers.kemalkondakci.tls=true"
+      - "traefik.http.services.kemalkondakci.loadbalancer.server.port=3000"
+      - "traefik.docker.network=traefik_default"
+
+volumes:
+  pg_data:
+  uploads:
+
+networks:
+  internal:
+  traefik_default:
+    external: true
