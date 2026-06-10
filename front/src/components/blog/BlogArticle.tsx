@@ -29,7 +29,7 @@ export default function BlogArticle({ post }: { post: PostView }) {
 
   return (
     <div className={`ktn-scope language-transition ${isTransitioning ? "transitioning" : ""}`}>
-      <main className="min-h-screen bg-[var(--bg)] px-4 py-16">
+      <main className="content-fade-in min-h-screen bg-[var(--bg)] px-4 py-16">
         <article className="max-w-3xl mx-auto">
           <Link href="/blog" className="text-sm text-[var(--cyan)] hover:underline">
             ← Blog

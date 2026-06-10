@@ -27,6 +27,11 @@ class Settings(BaseSettings):
     # CORS (yerel geliştirme için frontend kökenleri)
     cors_origins: list[str] = ["http://localhost:3000"]
 
+    # Login brute-force koruması (IP başına başarısız deneme)
+    login_max_attempts: int = 8          # bu kadar başarısız denemeden sonra
+    login_window_seconds: int = 15 * 60  # bu pencere içinde
+    login_block_seconds: int = 15 * 60   # bu süre boyunca kilitle
+
     # Tüm rotaların ön eki
     api_prefix: str = "/api"
 

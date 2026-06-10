@@ -5,6 +5,17 @@ on:
     branches: [ main ]
   pull_request:
 
+# GHCR'ye (ghcr.io) image push edebilmek icin GITHUB_TOKEN'a pakete yazma izni.
+# contents:read -> checkout icin yeterli.
+permissions:
+  contents: read
+  packages: write
+
+# Image adlarini tek yerde tut (GHCR adlari KUCUK HARF olmali).
+env:
+  IMAGE_API: ghcr.io/kemkum53/kemalkondakci.me-api
+  IMAGE_FRONT: ghcr.io/kemkum53/kemalkondakci.me-front
+
 jobs:
   # ============ Backend testleri (FastAPI / pytest) ============
   # Testler SQLite kullaniyor, gercek Postgres GEREKMEZ -> servis container yok.
@@ -49,21 +60,70 @@ jobs:
       - name: Testleri calistir (vitest)
         run: npm run test
 
-  # ============ api image build (test-api gecince) ============
-  # Su an SADECE build (push YOK). Server'a baglayinca buraya GHCR push eklenecek.
+  # ============ api image build + GHCR push (test-api gecince) ============
   build-api:
     runs-on: ubuntu-latest
     needs: test-api                     # api testleri gecmeden build yok
     steps:
       - uses: actions/checkout@v4
-      - name: api image build et
-        run: docker build -t kemalkondakci-api:ci ./api
 
-  # ============ front image build (test-front gecince) ============
+      - name: GHCR'ye login ol
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}            # = kemkum53
+          password: ${{ secrets.GITHUB_TOKEN }}    # Actions otomatik saglar
+
+      - name: api image build + push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./api
+          # PR'larda SADECE build (push yok); sadece main'e push'ta GHCR'ye yolla.
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ env.IMAGE_API }}:latest
+            ${{ env.IMAGE_API }}:${{ github.sha }}
+
+  # ============ front image build + GHCR push (test-front gecince) ============
   build-front:
     runs-on: ubuntu-latest
     needs: test-front
     steps:
       - uses: actions/checkout@v4
-      - name: front image build et
-        run: docker build -t kemalkondakci-front:ci ./front
+
+      - name: GHCR'ye login ol
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: front image build + push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./front
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ env.IMAGE_FRONT }}:latest
+            ${{ env.IMAGE_FRONT }}:${{ github.sha }}
+
+  # ============ Sunucuya deploy (sadece main push'ta) ============
+  # Iki image de GHCR'ye gittikten SONRA sunucuya SSH ile baglanir,
+  # yeni image'lari ceker ve compose ile yeniden baslatir.
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build-api, build-front]
+    if: github.ref == 'refs/heads/main'    # PR'larda deploy YOK
+    steps:
+      - name: Sunucuya SSH + guncelle
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}        # sunucu IP veya domain
+          username: ${{ secrets.SERVER_USER }}    # ssh kullanici adi
+          key: ${{ secrets.SSH_PRIVATE_KEY }}     # deploy private key
+          script: |
+            set -e
+            cd ${{ secrets.SERVER_PATH }}         # compose dosyasinin oldugu klasor
+            docker compose pull                   # GHCR'den yeni image'lari cek
+            docker compose up -d                  # degisen servisleri yeniden baslat
+            docker image prune -f                 # eski/danglig image'lari temizle

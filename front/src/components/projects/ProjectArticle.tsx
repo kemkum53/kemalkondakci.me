@@ -24,7 +24,7 @@ export default function ProjectArticle({ project }: { project: ProjectView }) {
 
   return (
     <div className={`ktn-scope language-transition ${isTransitioning ? "transitioning" : ""}`}>
-      <main className="min-h-screen bg-[var(--bg)] px-4 py-16">
+      <main className="content-fade-in min-h-screen bg-[var(--bg)] px-4 py-16">
         <article className="max-w-3xl mx-auto">
           <Link href="/projects" className="text-sm text-[var(--cyan)] hover:underline">
             ← {lang === "tr" ? "Projeler" : "Projects"}

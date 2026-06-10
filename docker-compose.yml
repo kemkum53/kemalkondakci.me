@@ -1,3 +1,5 @@
+name: kemalkondakci.me
+
 services:
   # PostgreSQL — sadece iç ağda, dışarı kapalı
   db:
@@ -20,6 +22,9 @@ services:
 
   # FastAPI backend — iç ağda, dışarı kapalı (Next BFF üzerinden erişilir)
   api:
+    # Sunucu bu image'i GHCR'den ceker (docker compose pull).
+    # 'build' de duruyor: yerelde 'docker compose build/up --build' hala calisir.
+    image: ghcr.io/kemkum53/kemalkondakci.me-api:latest
     build: ./api
     container_name: kemalkondakci-api
     restart: unless-stopped
@@ -40,6 +45,8 @@ services:
 
   # Next.js frontend (BFF) — Traefik tarafından dışarı açılan tek servis
   front:
+    # Sunucu bu image'i GHCR'den ceker; 'build' yerelde calismaya devam eder.
+    image: ghcr.io/kemkum53/kemalkondakci.me-front:latest
     build: ./front
     container_name: kemalkondakci-front
     restart: unless-stopped

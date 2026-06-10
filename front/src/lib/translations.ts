@@ -73,7 +73,7 @@ export const translations = {
         mlopsDeployment: {
           title: "mlops & deployment",
           description: "Docker, CI/CD, monitoring—ensuring models are stable and trackable in production.",
-          chips: ["Docker", "Azure", "CI/CD"]
+          chips: ["Docker", "AWS", "CI/CD"]
         }
       }
     },
@@ -171,7 +171,7 @@ export const translations = {
         mlopsDeployment: {
           title: "mlops & deployment",
           description: "Docker, CI/CD, ölçümleme—modellerin canlıda stabil ve izlenebilir olması.",
-          chips: ["Docker", "Azure", "CI/CD"]
+          chips: ["Docker", "AWS", "CI/CD"]
         }
       }
     },

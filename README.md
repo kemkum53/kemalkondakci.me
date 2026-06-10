@@ -81,6 +81,28 @@ cd api && .venv/bin/python -m pytest        # 30 test: auth, CRUD, sanitize, aut
 cd front && npm test                        # BlogList + PostsTable bileşen testleri
 ```
 
+## CI/CD (GitHub Actions)
+
+`.github/workflows/ci.yml` — `main`'e her push'ta ve her pull request'te çalışır.
+
+```
+   push / PR
+      │
+      ├─ test-api    (pytest, SQLite)   ┐ paralel, bağımsız
+      ├─ test-front  (vitest)           ┘
+      │
+      ├─ build-api    ◀ needs: test-api    → docker build ./api
+      └─ build-front  ◀ needs: test-front  → docker build ./front
+```
+
+- **test-api / test-front** aynı anda (paralel) koşar; birbirini beklemez.
+- **build-\*** yalnızca ilgili test job'ı geçerse başlar (`needs`) — başarısız test,
+  image build'ini en baştan engeller.
+- Backend testleri SQLite kullanır; CI'da Postgres servisi gerekmez.
+- Şu an kapsam **test + build** ile sınırlı (registry push / deploy henüz yok).
+
+**Planlanan (CD):** `test → build → GHCR'ye image push → sunucuda otomatik deploy`.
+
 ## API dökümantasyonu
 
 FastAPI otomatik OpenAPI/Swagger: `/api/docs` (ve `/api/redoc`).

@@ -556,3 +556,24 @@
 
 /* Motion safety */
 @media (prefers-reduced-motion: reduce){ .home *{ animation:none !important; transition:none !important; } .title::after{ display:none; } }
+
+/* Ana sayfa: son yazılar / öne çıkan projeler kart görseli */
+.thumb{ width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:.7rem; border:1px solid var(--border); }
+.moreRow{ max-width:1100px; margin:.9rem auto 0; }
+
+/* Kategorili teknoloji yığını (skills) — sade, modern; eski .chip baloncuklarının yerine */
+.stackGroups{ max-width:1100px; margin:1.6rem auto 0; display:grid; gap:1.5rem 1.25rem;
+  grid-template-columns: repeat(4, minmax(0,1fr)); }
+@media (max-width: 900px){ .stackGroups{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px){ .stackGroups{ grid-template-columns: 1fr; } }
+.stackGroup{ display:flex; flex-direction:column; gap:.6rem; }
+.stackLabel{ font-family:var(--font-display); font-size:.84rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--purple); margin:0; padding-bottom:.55rem;
+  border-bottom:1px solid color-mix(in oklab, var(--purple) 22%, var(--border)); }
+.tagRow{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:.5rem; }
+.tag{ font-size:.95rem; line-height:1; padding:.5rem .85rem; border-radius:9px;
+  border:1px solid var(--border); color:var(--text);
+  background: color-mix(in oklab, var(--surface) 55%, transparent);
+  transition: color .15s ease, border-color .15s ease, transform .15s ease; }
+.tag:hover{ color:var(--cyan); border-color: color-mix(in oklab, var(--cyan) 45%, var(--border));
+  transform: translateY(-1px); }

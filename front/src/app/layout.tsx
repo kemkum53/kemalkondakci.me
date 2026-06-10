@@ -1,15 +1,26 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./katana-ui.css"; // global katana stilleri burada yüklü
-import { Orbitron, Inter } from "next/font/google";
+import { Chakra_Petch, Outfit } from "next/font/google";
 import KatanaNavbar from "@/components/KatanaNavbar";
 import KatanaFooter from "@/components/KatanaFooter";
 import { LanguageProvider } from "@/lib/language-context";
 import { AccessibilityProvider } from "@/lib/accessibility-context";
 import EpilepsyWarning from "@/components/EpilepsyWarning";
 
-const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-display" });
-const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
+// Rafine cyberpunk tipografi: teknik ama modern başlık (Chakra Petch) +
+// temiz, okunaklı gövde (Outfit). latin-ext Türkçe karakterler için (İ, ş, ğ, ç).
+const display = Chakra_Petch({
+  subsets: ["latin", "latin-ext"],
+  weight: ["500", "600", "700"],
+  variable: "--ff-display",
+  display: "swap",
+});
+const body = Outfit({
+  subsets: ["latin", "latin-ext"],
+  variable: "--ff-body",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -30,7 +41,7 @@ export const metadata: Metadata = {
     ".NET Developer",
     "FastAPI",
     "Docker",
-    "Azure",
+    "AWS",
     "Artificial Intelligence",
     "Yapay Zeka",
     "Yazılım Geliştirici",
@@ -115,7 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       "C#",
       "FastAPI",
       "Docker",
-      "Azure",
+      "AWS",
       "MLOps",
       "Artificial Intelligence"
     ],
@@ -155,7 +166,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="alternate" hrefLang="en" href="https://kemalkondakci.me/en" />
         <link rel="alternate" hrefLang="x-default" href="https://kemalkondakci.me" />
       </head>
-      <body className={`${orbitron.variable} ${inter.variable}`}>
+      <body className={`${display.variable} ${body.variable}`}>
         <LanguageProvider>
           <AccessibilityProvider>
             <EpilepsyWarning />

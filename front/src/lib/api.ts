@@ -51,13 +51,38 @@ export async function apiFetch(path: string, opts: FetchOpts = {}): Promise<Resp
   });
 }
 
-/** Giriş: token döner, hatalıysa null. */
-export async function apiLogin(username: string, password: string): Promise<string | null> {
-  const res = await apiFetch("/api/auth/login", {
+export type LoginResult =
+  | { ok: true; token: string }
+  | { ok: false; status: number; message?: string };
+
+/** Giriş. Başarılıysa token, değilse durum kodu + backend mesajı döner.
+ *  forwardedFor: gerçek istemci IP'si (BFF, rate-limit doğru işlesin diye iletir). */
+export async function apiLogin(
+  username: string,
+  password: string,
+  forwardedFor?: string
+): Promise<LoginResult> {
+  const headers = new Headers();
+  headers.set("Content-Type", "application/json");
+  if (forwardedFor) headers.set("X-Forwarded-For", forwardedFor);
+
+  const res = await fetch(url("/api/auth/login"), {
     method: "POST",
-    body: { username, password },
+    headers,
+    body: JSON.stringify({ username, password }),
+    cache: "no-store",
   });
-  if (!res.ok) return null;
-  const data = await res.json();
-  return data.accessToken as string;
+
+  if (res.ok) {
+    const data = await res.json();
+    return { ok: true, token: data.accessToken as string };
+  }
+
+  let message: string | undefined;
+  try {
+    message = (await res.json())?.detail;
+  } catch {
+    /* gövde yok */
+  }
+  return { ok: false, status: res.status, message };
 }

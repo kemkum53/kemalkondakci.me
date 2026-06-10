@@ -705,3 +705,32 @@ body.safe-mode .text-gradient {
   background: none !important;
   color: inherit !important;
 }
+
+/* ---- Print / PDF export (özellikle /cv) ---- */
+@media print {
+  .ktn-nav,
+  .ktn-footer,
+  [data-noprint] {
+    display: none !important;
+  }
+
+  /* CV'yi yazdırırken koyu temayı aydınlık kâğıda çevir:
+     tüm bileşenler CSS değişkenlerini kullandığı için sadece değişkenleri
+     ezmek yeterli. */
+  .cv-print-root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --border: #c9cdd6;
+    --text: #111317;
+    --muted: #475063;
+    --purple: #5b3fd6;
+    --cyan: #0a6f93;
+    background: #ffffff !important;
+  }
+  .cv-print-root * {
+    animation: none !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+  @page { margin: 14mm; }
+}

@@ -24,8 +24,9 @@
   --ring:0 0 0 2px color-mix(in oklab, var(--purple) 60%, transparent),
          0 0 0 8px color-mix(in oklab, var(--purple) 20%, transparent);
 
-  --font-display:"Orbitron","Oxanium",system-ui,sans-serif;
-  --font-body:"Inter","Outfit",system-ui,sans-serif;
+  /* next/font (layout.tsx) --ff-* değişkenlerini yükler; tam aile yığınını buradan kuruyoruz. */
+  --font-display: var(--ff-display), "Chakra Petch", "Rajdhani", system-ui, sans-serif;
+  --font-body: var(--ff-body), "Outfit", "Inter", system-ui, sans-serif;
 
   color: var(--text);
   font-family: var(--font-body);
@@ -523,3 +524,27 @@
 .ktn-scope .ktn-prose td{ border:1px solid var(--border); padding:.5em .75em; text-align:left; }
 .ktn-scope .ktn-prose th{ background:var(--surface); }
 .ktn-scope .ktn-prose p.is-editor-empty:first-child::before{ content:attr(data-placeholder); color:var(--muted); float:left; height:0; pointer-events:none; }
+
+/* ============================================================
+   Modernizasyon (rafine cyberpunk) — tipografi + cam navbar
+   ============================================================ */
+
+/* next/font değişkenlerini global olarak da kur (ktn-scope dışındaki alanlar için). */
+body{
+  --font-display: var(--ff-display), "Chakra Petch", "Rajdhani", system-ui, sans-serif;
+  --font-body: var(--ff-body), "Outfit", "Inter", system-ui, sans-serif;
+}
+
+/* Eksik olan yardımcı sınıf: başlıkların display fontunu gerçekten kullanmasını sağlar. */
+.font-display{
+  font-family: var(--font-display);
+  letter-spacing: .005em;
+}
+
+/* Cam (glassmorphism) yapışkan navbar — modern, derinlikli. */
+.ktn-nav{
+  background: color-mix(in oklab, var(--surface) 60%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  backdrop-filter: blur(16px) saturate(150%);
+  border-bottom: 1px solid color-mix(in oklab, var(--purple) 16%, var(--border));
+}

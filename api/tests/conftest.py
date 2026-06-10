@@ -40,6 +40,12 @@ def _setup(tmp_path):
     settings.jwt_secret = "test-jwt-secret-at-least-32-characters-long"
     settings.uploads_dir = str(tmp_path / "uploads")
 
+    # Login rate-limiter bellek-içi singleton; testler arası sızmasın.
+    from app.routers.auth import _limiter
+
+    _limiter._fails.clear()
+    _limiter._blocked.clear()
+
     Base.metadata.create_all(engine)
     yield
     Base.metadata.drop_all(engine)

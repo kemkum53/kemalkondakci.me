@@ -24,7 +24,7 @@ export default function ProjectsList({ projects }: { projects: ProjectCard[] }) 
 
   return (
     <div className={`ktn-scope language-transition ${isTransitioning ? "transitioning" : ""}`}>
-      <main className="min-h-screen bg-[var(--bg)] px-4 py-16">
+      <main className="content-fade-in min-h-screen bg-[var(--bg)] px-4 py-16">
         <div className="max-w-5xl mx-auto">
           <h1 className="ktn-glitch font-display text-4xl md:text-5xl text-[var(--text)] mb-3" data-text={copy.title}>
             {copy.title}

@@ -1,0 +1,29 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1c1542"/>
+      <stop offset="1" stop-color="#0b1020"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.32" cy="0.28" r="0.8">
+      <stop offset="0" stop-color="#8b5cf6" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- brand tile -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg)"/>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#glow)"/>
+  <rect x="2.75" y="2.75" width="58.5" height="58.5" rx="13.25" fill="none" stroke="#2dd4bf" stroke-opacity="0.55" stroke-width="1.5"/>
+
+  <!-- KK monogram (matches the header logo) -->
+  <!-- main K -->
+  <path d="M14 14 L14 50 M14 32 L38 14 M14 32 L38 50"
+        fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- second K (teal accent) -->
+  <path d="M30 18 L30 46 M30 32 L48 18 M30 32 L48 46"
+        fill="none" stroke="#2dd4bf" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.92"/>
+
+  <!-- tech accent dots -->
+  <circle cx="21" cy="21" r="1.8" fill="#8b5cf6"/>
+  <circle cx="45" cy="27" r="1.4" fill="#2dd4bf"/>
+</svg>

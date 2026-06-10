@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { apiLogin } from "@/lib/api";
 import { getSession } from "@/lib/session";
 
@@ -19,15 +20,25 @@ export async function login(
     return { error: "Kullanıcı adı ve şifre gerekli." };
   }
 
+  // Gerçek istemci IP'sini backend'e ilet ki rate-limit IP başına doğru çalışsın.
+  const h = await headers();
+  const clientIp =
+    h.get("x-forwarded-for")?.split(",")[0].trim() ||
+    h.get("x-real-ip") ||
+    undefined;
+
   // Backend'e kimlik doğrulat; JWT al.
-  const token = await apiLogin(username, password);
-  if (!token) {
+  const result = await apiLogin(username, password, clientIp);
+  if (!result.ok) {
+    if (result.status === 429) {
+      return { error: result.message ?? "Çok fazla deneme. Lütfen biraz sonra tekrar deneyin." };
+    }
     return { error: "Kullanıcı adı veya şifre hatalı." };
   }
 
   // Token'ı httpOnly cookie'de (iron-session) sakla.
   const session = await getSession();
-  session.token = token;
+  session.token = result.token;
   session.username = username;
   await session.save();
 
