@@ -183,6 +183,8 @@ export default function ContactPage() {
                       onChange={handleInputChange}
                       placeholder={t.contact.form.namePlaceholder}
                       required
+                      minLength={2}
+                      maxLength={100}
                       className={contactStyles.formInput}
                     />
                   </div>
@@ -197,6 +199,7 @@ export default function ContactPage() {
                       onChange={handleInputChange}
                       placeholder={t.contact.form.emailPlaceholder}
                       required
+                      maxLength={200}
                       className={contactStyles.formInput}
                     />
                   </div>
@@ -212,6 +215,7 @@ export default function ContactPage() {
                     value={formData.subject}
                     onChange={handleInputChange}
                     placeholder={t.contact.form.subjectPlaceholder}
+                    maxLength={150}
                     className={contactStyles.formInput}
                   />
                 </div>
@@ -226,6 +230,8 @@ export default function ContactPage() {
                     onChange={handleInputChange}
                     placeholder={t.contact.form.messagePlaceholder}
                     required
+                    minLength={10}
+                    maxLength={5000}
                     className={contactStyles.formTextarea}
                   />
                 </div>
