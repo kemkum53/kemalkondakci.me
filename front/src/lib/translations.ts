@@ -58,7 +58,7 @@ export const translations = {
         statsProjects: "Completed Projects",
       },
       aboutText:
-        "I specialize in developing AI solutions and robust .NET applications. With expertise in machine learning, computer vision, and modern software development practices, I deliver measurable results for complex technical challenges.",
+        "I build AI and software that ships. LLM-powered products, real-time computer-vision systems running in the field today, .NET and Python backends, Flutter mobile apps — and the Docker/CI-CD pipelines that put them all live. I take an idea end to end: design it, build it, run it in production.",
       skills: {
         aiEngineering: {
           title: "ai engineering",
@@ -156,7 +156,7 @@ export const translations = {
         statsProjects: "Tamamlanan Proje",
       },
       aboutText:
-        "Yapay zekâ çözümleri ve sağlam .NET uygulamaları geliştirme konusunda uzmanım. Makine öğrenmesi, bilgisayar görüşü ve modern yazılım geliştirme pratikleri alanlarındaki uzmanlığımla, karmaşık teknik zorluklar için ölçülebilir sonuçlar sunuyorum.",
+        "Üretime giren yapay zekâ ve yazılım geliştiriyorum. LLM tabanlı ürünler, bugün sahada çalışan gerçek-zamanlı bilgisayarlı görü sistemleri, .NET ve Python backend'leri, Flutter mobil uygulamalar ve hepsini canlıya taşıyan Docker/CI-CD hatları. Bir fikri uçtan uca götürürüm: tasarlar, kodlar, üretimde çalıştırırım.",
       skills: {
         aiEngineering: {
           title: "yz mühendisliği",
