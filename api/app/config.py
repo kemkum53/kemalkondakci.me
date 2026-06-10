@@ -32,6 +32,16 @@ class Settings(BaseSettings):
     login_window_seconds: int = 15 * 60  # bu pencere içinde
     login_block_seconds: int = 15 * 60   # bu süre boyunca kilitle
 
+    # İletişim formu (SMTP ile gerçek e-posta gönderimi)
+    smtp_host: str = ""          # ör. smtp.gmail.com — boşsa form devre dışı (503)
+    smtp_port: int = 587         # 587 (STARTTLS) veya 465 (SSL)
+    smtp_user: str = ""          # SMTP kullanıcı (genelde gönderen e-posta)
+    smtp_password: str = ""      # SMTP/uygulama şifresi
+    smtp_starttls: bool = True   # 587 için True, 465 için False (SSL)
+    contact_to: str = "kondakci.k@gmail.com"  # mesajların gideceği adres
+    contact_from: str = ""       # boşsa smtp_user kullanılır
+    contact_max_per_hour: int = 5  # IP başına saatlik gönderim limiti (spam koruması)
+
     # Tüm rotaların ön eki
     api_prefix: str = "/api"
 

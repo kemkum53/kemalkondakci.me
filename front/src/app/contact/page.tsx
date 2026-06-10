@@ -14,7 +14,8 @@ export default function ContactPage() {
     name: "",
     email: "",
     subject: "",
-    message: ""
+    message: "",
+    company: "" // honeypot (gizli) — botlar doldurur, gerçek kullanıcı boş bırakır
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -44,19 +45,19 @@ export default function ContactPage() {
     setSubmitStatus('idle');
     
     try {
-      // Simulate form submission delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Create mailto link as fallback
-      const subject = encodeURIComponent(formData.subject || t.contact.form.subjectPlaceholder);
-      const body = encodeURIComponent(
-        `${t.contact.form.name}: ${formData.name}\n${t.contact.form.email}: ${formData.email}\n\n${formData.message}`
-      );
-      window.open(`mailto:kondakci.k@gmail.com?subject=${subject}&body=${body}`);
-      
-      setSubmitStatus('success');
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    } catch (error) {
+      // Gerçek gönderim: backend /api/contact -> SMTP ile e-posta.
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        setSubmitStatus('success');
+        setFormData({ name: "", email: "", subject: "", message: "", company: "" });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch {
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -147,6 +148,17 @@ export default function ContactPage() {
             </h2>
             <div className={styles.cardBody}>
               <form onSubmit={handleSubmit} className={contactStyles.contactForm}>
+                {/* Honeypot — gizli alan; botlar doldurur, sunucu sessizce yutar. */}
+                <input
+                  type="text"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleInputChange}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+                />
                 {/* Status Message */}
                 {submitStatus === 'success' && (
                   <div className={`${contactStyles.statusMessage} ${contactStyles.statusSuccess}`}>

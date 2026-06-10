@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
-from .routers import auth, posts, projects, uploads
+from .routers import auth, contact, posts, projects, uploads
 
 API = settings.api_prefix
 
@@ -41,6 +41,7 @@ app.include_router(posts.admin_router, prefix=API)
 app.include_router(projects.public_router, prefix=API)
 app.include_router(projects.admin_router, prefix=API)
 app.include_router(uploads.router, prefix=API)
+app.include_router(contact.router, prefix=API)
 
 
 @app.get(f"{API}/health", tags=["health"])

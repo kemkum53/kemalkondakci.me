@@ -99,7 +99,7 @@ export const translations = {
         messagePlaceholder: "Tell me about your project...",
         send: "Send Message",
         sending: "Sending...",
-        success: "Message sent! Your email client should open shortly.",
+        success: "Thanks! Your message has been sent — I'll get back to you soon.",
         error: "There was an error. Please try again or contact me directly.",
       },
       info: {
@@ -197,7 +197,7 @@ export const translations = {
         messagePlaceholder: "Projeniz hakkında bana bilgi verin...",
         send: "Mesaj Gönder",
         sending: "Gönderiliyor...",
-        success: "Mesaj gönderildi! E-posta uygulamanız kısa süre içinde açılacak.",
+        success: "Teşekkürler! Mesajın bana ulaştı — en kısa sürede dönüş yapacağım.",
         error: "Bir hata oluştu. Lütfen tekrar deneyin veya doğrudan benimle iletişime geçin.",
       },
       info: {
