@@ -32,9 +32,14 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 # libc6-compat: Next standalone'un ihtiyac duydugu glibc uyumlulugu.
-# apk upgrade: base image'daki sistem paketlerini (ozellikle openssl/libssl3)
-# en guncel yamali surume cikar -> Trivy'nin yakaladigi OS CVE'lerini kapatir.
-RUN apk add --no-cache libc6-compat && apk upgrade --no-cache
+# apk upgrade: base image sistem paketlerini (ozellikle openssl/libssl3)
+#   en guncel yamali surume cikarir -> OS katmani CVE'lerini kapatir.
+# npm/npx sil: 'node server.js' calismak icin npm GEREKMEZ (sadece build-time
+#   araci). node:20-alpine ile gelen npm, kendi icinde eski tar/glob/minimatch/
+#   cross-spawn tasir; bunlari silmek o CVE'leri ve gereksiz saldiri yuzeyini
+#   tek seferde kaldirir, image'i da kuculttur.
+RUN apk add --no-cache libc6-compat && apk upgrade --no-cache \
+ && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000

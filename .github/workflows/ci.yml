@@ -88,15 +88,15 @@ jobs:
 
       # 2) Trivy ile guvenlik taramasi.
       #    ignore-unfixed: duzeltmesi/yamasi olmayan CVE'lerle ugrasma.
-      #    exit-code '0' -> SIMDILIK sadece RAPORLA, job'i kirma (once gozlemleyelim).
-      #    Image temizlenince '1' yapip GERCEK gate'e cevirecegiz.
+      #    exit-code '1' -> ENFORCE: image temiz, artik HIGH/CRITICAL gate.
       - name: Guvenlik taramasi (Trivy)
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE_API }}:${{ github.sha }}
           severity: CRITICAL,HIGH
           ignore-unfixed: true
-          exit-code: '0'
+          # api temiz -> ENFORCE: HIGH/CRITICAL bulunursa job FAIL -> push/deploy olmaz.
+          exit-code: '1'
 
       # 3) Tarama gecince (ve sadece main'de) GHCR'ye push et.
       - name: GHCR'ye push (sadece main)
@@ -130,14 +130,15 @@ jobs:
             ${{ env.IMAGE_FRONT }}:latest
             ${{ env.IMAGE_FRONT }}:${{ github.sha }}
 
-      # 2) Trivy taramasi (simdilik raporla, kirma).
+      # 2) Trivy taramasi (HIGH/CRITICAL -> gate).
       - name: Guvenlik taramasi (Trivy)
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE_FRONT }}:${{ github.sha }}
           severity: CRITICAL,HIGH
           ignore-unfixed: true
-          exit-code: '0'
+          # OS yamandi + npm runtime'dan silindi -> ENFORCE.
+          exit-code: '1'
 
       # 3) Tarama gecince (sadece main) GHCR'ye push.
       - name: GHCR'ye push (sadece main)
