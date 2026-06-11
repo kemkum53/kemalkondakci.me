@@ -31,7 +31,10 @@ RUN npm run build
 ############################
 FROM node:20-alpine AS runner
 WORKDIR /app
-RUN apk add --no-cache libc6-compat
+# libc6-compat: Next standalone'un ihtiyac duydugu glibc uyumlulugu.
+# apk upgrade: base image'daki sistem paketlerini (ozellikle openssl/libssl3)
+# en guncel yamali surume cikar -> Trivy'nin yakaladigi OS CVE'lerini kapatir.
+RUN apk add --no-cache libc6-compat && apk upgrade --no-cache
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
