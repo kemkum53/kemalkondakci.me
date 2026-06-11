@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import "./katana-ui.css"; // global katana stilleri burada yüklü
 import { Chakra_Petch, Outfit } from "next/font/google";
@@ -167,6 +168,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="alternate" hrefLang="x-default" href="https://kemalkondakci.me" />
       </head>
       <body className={`${display.variable} ${body.variable}`}>
+        {/* Umami — gizlilik dostu, çerezsiz ziyaret analitiği (self-hosted) */}
+        <Script
+          src="https://analytics.kemalkondakci.me/script.js"
+          data-website-id="0ee472dd-9623-49a0-ba3d-2e32926ae104"
+          strategy="afterInteractive"
+        />
         <LanguageProvider>
           <AccessibilityProvider>
             <EpilepsyWarning />

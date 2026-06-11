@@ -240,6 +240,7 @@ export default function ContactPage() {
                   type="submit"
                   disabled={isSubmitting}
                   className={contactStyles.submitBtn}
+                  data-umami-event="contact-submit"
                 >
                   {isSubmitting ? t.contact.form.sending : t.contact.form.send}
                 </button>

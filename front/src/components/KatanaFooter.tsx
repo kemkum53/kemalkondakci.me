@@ -87,7 +87,7 @@ export default function KatanaFooter({
                 </svg>
                 {t.footer.goToTop}
               </a>
-              <a href="/cv" className="ktn-btn ktn-footer-cv">{t.footer.downloadCv}</a>
+              <a href="/cv" className="ktn-btn ktn-footer-cv" data-umami-event="footer-cv">{t.footer.downloadCv}</a>
             </div>
           </section>
 
@@ -97,7 +97,7 @@ export default function KatanaFooter({
               <ul className="ktn-footer-nav-list">
                 {g.items.map((it) => (
                   <li key={it.href}>
-                    <Link href={it.href} className="ktn-footer-link">{it.label}</Link>
+                    <Link href={it.href} className="ktn-footer-link" data-umami-event="footer-link" data-umami-event-dest={it.label}>{it.label}</Link>
                   </li>
                 ))}
               </ul>

@@ -71,16 +71,19 @@ export default function ProjectsList({ projects }: { projects: ProjectCard[] }) 
 
                       <div className="mt-auto flex items-center gap-4 text-sm">
                         {p.repoUrl && (
-                          <a href={p.repoUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--muted)] hover:text-[var(--text)]">
+                          <a href={p.repoUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--muted)] hover:text-[var(--text)]"
+                            data-umami-event="project-github" data-umami-event-slug={p.slug}>
                             GitHub ↗
                           </a>
                         )}
                         {p.liveUrl && (
-                          <a href={p.liveUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--muted)] hover:text-[var(--text)]">
+                          <a href={p.liveUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--muted)] hover:text-[var(--text)]"
+                            data-umami-event="project-demo" data-umami-event-slug={p.slug}>
                             Demo ↗
                           </a>
                         )}
-                        <Link href={`/projects/${p.slug}`} className="ml-auto text-[var(--cyan)]">
+                        <Link href={`/projects/${p.slug}`} className="ml-auto text-[var(--cyan)]"
+                          data-umami-event="project-details" data-umami-event-slug={p.slug}>
                           {copy.detail}
                         </Link>
                       </div>
