@@ -82,6 +82,9 @@ jobs:
           context: ./api
           load: true
           push: false
+          # buildx attestation index'ini kapat: 'load' edilen image tek temiz
+          # manifest olur, sonraki 'docker push' "unknown blob" vermez.
+          provenance: false
           tags: |
             ${{ env.IMAGE_API }}:latest
             ${{ env.IMAGE_API }}:${{ github.sha }}
@@ -126,6 +129,8 @@ jobs:
           context: ./front
           load: true
           push: false
+          # Ayni nedenle: temiz tek-manifest -> 'docker push' guvenli.
+          provenance: false
           tags: |
             ${{ env.IMAGE_FRONT }}:latest
             ${{ env.IMAGE_FRONT }}:${{ github.sha }}
