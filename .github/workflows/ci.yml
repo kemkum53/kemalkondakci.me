@@ -74,15 +74,36 @@ jobs:
           username: ${{ github.actor }}            # = kemkum53
           password: ${{ secrets.GITHUB_TOKEN }}    # Actions otomatik saglar
 
-      - name: api image build + push
+      # 1) Once SADECE build et ve runner'in yerel docker'ina yukle (push YOK).
+      #    'load: true' -> image'i taranabilmesi icin daemon'a alir.
+      - name: api image build (yerel, tarama icin)
         uses: docker/build-push-action@v6
         with:
           context: ./api
-          # PR'larda SADECE build (push yok); sadece main'e push'ta GHCR'ye yolla.
-          push: ${{ github.event_name != 'pull_request' }}
+          load: true
+          push: false
           tags: |
             ${{ env.IMAGE_API }}:latest
             ${{ env.IMAGE_API }}:${{ github.sha }}
+
+      # 2) Trivy ile guvenlik taramasi.
+      #    ignore-unfixed: duzeltmesi/yamasi olmayan CVE'lerle ugrasma.
+      #    exit-code '0' -> SIMDILIK sadece RAPORLA, job'i kirma (once gozlemleyelim).
+      #    Image temizlenince '1' yapip GERCEK gate'e cevirecegiz.
+      - name: Guvenlik taramasi (Trivy)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ env.IMAGE_API }}:${{ github.sha }}
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '0'
+
+      # 3) Tarama gecince (ve sadece main'de) GHCR'ye push et.
+      - name: GHCR'ye push (sadece main)
+        if: github.event_name != 'pull_request'
+        run: |
+          docker push ${{ env.IMAGE_API }}:latest
+          docker push ${{ env.IMAGE_API }}:${{ github.sha }}
 
   # ============ front image build + GHCR push (test-front gecince) ============
   build-front:
@@ -98,14 +119,32 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: front image build + push
+      # 1) Build + yerel daemon'a yukle (push YOK).
+      - name: front image build (yerel, tarama icin)
         uses: docker/build-push-action@v6
         with:
           context: ./front
-          push: ${{ github.event_name != 'pull_request' }}
+          load: true
+          push: false
           tags: |
             ${{ env.IMAGE_FRONT }}:latest
             ${{ env.IMAGE_FRONT }}:${{ github.sha }}
+
+      # 2) Trivy taramasi (simdilik raporla, kirma).
+      - name: Guvenlik taramasi (Trivy)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ env.IMAGE_FRONT }}:${{ github.sha }}
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '0'
+
+      # 3) Tarama gecince (sadece main) GHCR'ye push.
+      - name: GHCR'ye push (sadece main)
+        if: github.event_name != 'pull_request'
+        run: |
+          docker push ${{ env.IMAGE_FRONT }}:latest
+          docker push ${{ env.IMAGE_FRONT }}:${{ github.sha }}
 
   # ============ Sunucuya deploy (sadece main push'ta) ============
   # Iki image de GHCR'ye gittikten SONRA sunucuya SSH ile baglanir,

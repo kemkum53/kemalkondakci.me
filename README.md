@@ -1,108 +1,128 @@
 # kemalkondakci.me
 
-Kişisel CV / portföy sitesi ve çift dilli (TR/EN) blog. Çok servisli, Dockerize
-bir mimariyle çalışır.
+My personal CV / portfolio and bilingual (TR/EN) blog — a multi-service,
+fully Dockerized application I designed, built and run in production.
 
-## Mimari
+**Live:** https://kemalkondakci.me
+
+> Next.js 16 · FastAPI · PostgreSQL · Docker Compose · Traefik · GitHub Actions
+
+---
+
+## Highlights
+
+- **Bilingual content engine** — blog posts and projects (TR/EN) managed from a
+  custom admin panel with a rich-text editor; publish without deploying code.
+- **BFF security** — the JWT lives in an httpOnly, encrypted cookie; the browser
+  never talks to the backend directly. Server-side HTML sanitization (nh3).
+- **Interactive CV** — experience timeline, skills, DB-driven selected projects,
+  and a designed bilingual **PDF export**.
+- **Real contact form** — FastAPI + SMTP, with a honeypot and per-IP rate limiting.
+- **Hardened admin login** — in-memory brute-force protection (per-IP) and
+  security headers.
+- **Privacy-first analytics** — self-hosted [Umami](https://umami.is) (cookieless).
+- **CI/CD** — test → build → push to GHCR → deploy, on every push to `main`.
+
+## Architecture
 
 ```
-                         ┌─────────────┐
-   İnternet ── Traefik ──│  front      │  Next.js 16 (App Router) — BFF
-   (HTTPS)               │  (Next.js)  │  • Site + admin paneli (TinyMCE)
-                         └──────┬──────┘  • JWT'yi httpOnly cookie'de tutar
-                                │ (iç ağ)
-                         ┌──────┴──────┐
-                         │  api        │  FastAPI (Python) — REST API
-                         │  (FastAPI)  │  • JWT auth, post CRUD, görsel yükleme
-                         └──────┬──────┘  • OpenAPI: /api/docs
-                                │ (iç ağ)
-                         ┌──────┴──────┐
-                         │  db         │  PostgreSQL 16
-                         │ (Postgres)  │  • SQLAlchemy + Alembic migration
-                         └─────────────┘
+                              Internet  (HTTPS via Cloudflare)
+                                  │
+                            ┌─────┴─────┐
+                            │  Traefik  │  reverse proxy + Let's Encrypt
+                            └──┬─────┬──┘
+              ┌────────────────┘     └───────────────┐
+        ┌─────┴─────┐                          ┌──────┴──────┐
+        │  front    │ Next.js 16 (App Router)  │   umami     │ self-hosted,
+        │ (Next.js) │ • public site + admin    │ (analytics) │ privacy-first
+        └─────┬─────┘ • BFF: JWT in cookie     └─────────────┘
+              │ internal network
+        ┌─────┴─────┐ FastAPI (Python) — REST API
+        │   api     │ • JWT auth, content CRUD, image upload
+        │ (FastAPI) │ • nh3 sanitization, SMTP contact, rate limiting
+        └─────┬─────┘ • OpenAPI: /api/docs
+              │ internal network
+        ┌─────┴─────┐ PostgreSQL 16
+        │    db     │ • SQLAlchemy + Alembic migrations
+        └───────────┘
 ```
 
-- **front/** — Next.js 16, TypeScript, Tailwind. Public site + admin paneli.
-  Backend'e yalnızca sunucu tarafından (Bearer JWT ile) konuşur; tarayıcıya
-  backend doğrudan açılmaz (BFF deseni). `/api/*` istekleri backend'e proxy'lenir.
-- **api/** — FastAPI + SQLAlchemy + Alembic + PostgreSQL. JWT kimlik doğrulama
-  (httpOnly cookie'de saklanır), HTML sanitizasyonu (nh3), görsel yükleme.
-- **db** ve **api** dışarı kapalı (sadece iç ağ); yalnızca **front** Traefik
-  üzerinden yayınlanır.
+- **`front/`** — Next.js 16, TypeScript. Public site + admin panel. Acts as a
+  Backend-for-Frontend: it holds the JWT in an httpOnly cookie and proxies
+  `/api/*` to the backend server-side, so the API is never exposed to the browser.
+- **`api/`** — FastAPI + SQLAlchemy + Alembic + PostgreSQL.
+- **`db` and `api` are never exposed publicly** (internal network only); only
+  **`front`** is published through Traefik.
 
-## Geliştirme (yerel)
-
-İki terminal:
+## Local development
 
 ```bash
 # 1) Backend
 cd api
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-# Postgres'i ayağa kaldır (ör. docker run ... postgres) ve api/.env'i doldur
+cp .env.example .env            # fill JWT_SECRET, ADMIN_PASSWORD_HASH, (SMTP_* optional)
 alembic upgrade head
 uvicorn app.main:app --reload --port 8000
 
 # 2) Frontend
 cd front
 npm install
-npm run dev      # http://localhost:3000  (/api/* → http://localhost:8000)
+npm run dev                     # http://localhost:3000  (/api/* → http://localhost:8000)
 ```
 
-Ortam dosyaları: `api/.env` (bkz. `api/.env.example`), `front/.env`
-(bkz. `front/.env.example`).
+Generate the admin password hash:
 
-Admin şifre hash'i üret:
 ```bash
-cd api && python -m app.set_admin <şifre>   # çıktıyı api/.env > ADMIN_PASSWORD_HASH
+cd api && python -m app.set_admin <password>   # paste output into api/.env > ADMIN_PASSWORD_HASH
 ```
 
-## Üretim (Docker Compose)
+> Note: bcrypt hashes contain `$`. When placed in a Docker `env_file`, escape every
+> `$` as `$$` (Compose interpolates `env_file` values).
 
-Traefik'in `traefik_default` adlı external network'ü mevcut olmalı.
+## Production (Docker Compose)
 
 ```bash
-cp .env.example .env            # POSTGRES_*, SESSION_SECRET doldur
-cp api/.env.example api/.env    # JWT_SECRET, ADMIN_PASSWORD_HASH doldur
+cp .env.example .env            # POSTGRES_*, SESSION_SECRET
+cp api/.env.example api/.env    # JWT_SECRET, ADMIN_PASSWORD_HASH, SMTP_*
 docker compose up -d --build
 ```
 
-Servisler: `db` (Postgres + volume), `api` (Alembic migration + uvicorn),
-`front` (Next.js, Traefik ile yayında). Yüklenen görseller ve veritabanı
-kalıcı volume'larda tutulur.
+Three services: `db` (Postgres + volume), `api` (Alembic migrations → uvicorn),
+`front` (Next.js, published via Traefik). Uploaded images and the database live
+in persistent volumes.
 
-## Testler
+## Testing
 
 ```bash
-# Backend (pytest — bellek/dosya SQLite ile, Postgres gerekmez)
-cd api && .venv/bin/python -m pytest        # 30 test: auth, CRUD, sanitize, autosave, upload
-
-# Frontend (Vitest + Testing Library)
-cd front && npm test                        # BlogList + PostsTable bileşen testleri
+cd api && .venv/bin/python -m pytest    # 45 tests: auth, rate-limit, CRUD, sanitize, contact, uploads
+cd front && npm test                    # Vitest + Testing Library (component tests)
 ```
 
 ## CI/CD (GitHub Actions)
 
-`.github/workflows/ci.yml` — `main`'e her push'ta ve her pull request'te çalışır.
+`.github/workflows/ci.yml` runs on every push to `main` and on pull requests.
 
 ```
-   push / PR
+   push to main
       │
-      ├─ test-api    (pytest, SQLite)   ┐ paralel, bağımsız
-      ├─ test-front  (vitest)           ┘
+      ├─ test-api    (pytest)   ┐ parallel
+      ├─ test-front  (vitest)   ┘
       │
-      ├─ build-api    ◀ needs: test-api    → docker build ./api
-      └─ build-front  ◀ needs: test-front  → docker build ./front
+      ├─ build-api    ◀ needs: test-api    → image → GHCR
+      ├─ build-front  ◀ needs: test-front  → image → GHCR
+      │
+      └─ deploy       ◀ needs: builds       → SSH: docker compose pull && up -d
 ```
 
-- **test-api / test-front** aynı anda (paralel) koşar; birbirini beklemez.
-- **build-\*** yalnızca ilgili test job'ı geçerse başlar (`needs`) — başarısız test,
-  image build'ini en baştan engeller.
-- Backend testleri SQLite kullanır; CI'da Postgres servisi gerekmez.
-- Şu an kapsam **test + build** ile sınırlı (registry push / deploy henüz yok).
+A broken test blocks the image build and the deploy — nothing reaches production
+unless tests pass.
 
-**Planlanan (CD):** `test → build → GHCR'ye image push → sunucuda otomatik deploy`.
+## API documentation
 
-## API dökümantasyonu
+Auto-generated OpenAPI / Swagger at `/api/docs` (and `/api/redoc`).
 
-FastAPI otomatik OpenAPI/Swagger: `/api/docs` (ve `/api/redoc`).
+## License
+
+Code is released under the [MIT License](./LICENSE). Personal content, copy, CV
+data and images are © Kemal Kondakçı.
