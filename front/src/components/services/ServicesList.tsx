@@ -70,8 +70,7 @@ const COPY = {
     all: "Tümü",
     empty: "Şu anda yayında hizmet yok. İhtiyacınızı yazarsanız kapsamı birlikte çıkarabiliriz.",
     noneInCategory: "Bu kategoride yayında hizmet yok.",
-    noticeTitle: "Fiyatlar değişebilir",
-    noticeText: "Buradaki rakamlar tipik bir kapsam içindir ve başlangıç noktasıdır. İşin büyüklüğü, sayfa ve ürün sayısı, istediğiniz entegrasyonlar ve içeriğin hazır olup olmaması fiyatı aşağı da yukarı da çeker. Kesin rakam, ihtiyacınızı konuştuktan sonra çıkardığımız kapsamla netleşir ve size yazılı olarak verilir.",
+    pillPrices: "Fiyatlar kapsama göre değişir",
     scope: "Neler dahil",
     hideScope: "Kapsamı gizle",
     delivery: "Teslim",
@@ -83,7 +82,7 @@ const COPY = {
     ctaText: "Yapmak istediğiniz işi birkaç cümleyle yazın; uygulanabilir mi, ne kadar tutar diye bakıp net bir kapsamla döneyim.",
     ctaPrimary: "İhtiyacınızı yazın",
     ctaSecondary: "Projelerimi inceleyin",
-    footnote: "Bütün fiyatlar KDV hariçtir. Aylık bedeli olan hizmetlerde sunucu, güncelleme ve destek dahildir; üçüncü taraf lisans ve kullanım ücretleri (ödeme altyapısı, yapay zekâ modeli kullanımı, alan adı) ayrıca hesaplanır. Teslim süreleri içerik ve erişimlerin zamanında verilmesine bağlıdır.",
+    footnote: "Buradaki rakamlar tipik bir kapsam içindir ve başlangıç noktasıdır; işin büyüklüğü, sayfa ve ürün sayısı, istediğiniz entegrasyonlar ve içeriğin hazır olup olmaması fiyatı aşağı da yukarı da çeker. Kesin rakam, ihtiyacınızı konuştuktan sonra çıkardığımız kapsamla netleşir ve size yazılı olarak verilir. Bütün fiyatlar KDV hariçtir. Aylık bedeli olan hizmetlerde sunucu, güncelleme ve destek dahildir; üçüncü taraf lisans ve kullanım ücretleri (ödeme altyapısı, yapay zekâ modeli kullanımı, alan adı) ayrıca hesaplanır.",
   },
   en: {
     eyebrow: "Services and pricing",
@@ -94,8 +93,7 @@ const COPY = {
     all: "All",
     empty: "No published services right now. Describe what you need and we can scope it together.",
     noneInCategory: "No published services in this category.",
-    noticeTitle: "Prices can change",
-    noticeText: "The figures here cover a typical scope and are a starting point. The size of the job, the number of pages and products, the integrations you need and whether your content is ready can move the price either way. The final figure is set once we have talked through your needs, and you get it in writing.",
+    pillPrices: "Prices vary with scope",
     scope: "What is included",
     hideScope: "Hide details",
     delivery: "Delivery",
@@ -107,7 +105,7 @@ const COPY = {
     ctaText: "Describe the job in a few sentences. I will tell you whether it is feasible, what it would cost, and come back with a concrete scope.",
     ctaPrimary: "Tell me what you need",
     ctaSecondary: "See my projects",
-    footnote: "All prices exclude VAT. Monthly fees include hosting, updates and support; third-party licence and usage costs (payment provider, AI model usage, domain) are billed separately. Delivery times depend on content and access being provided on time.",
+    footnote: "The figures here cover a typical scope and are a starting point; the size of the job, the number of pages and products, the integrations you need and whether your content is ready can move the price either way. The final figure is set once we have talked through your needs, and you get it in writing. All prices exclude VAT. Monthly fees include hosting, updates and support; third-party licence and usage costs (payment provider, AI model usage, domain) are billed separately.",
   },
 } as const;
 
@@ -143,6 +141,12 @@ export default function ServicesList({ services }: { services: ServiceCard[] }) 
                 {copy.pillResponse}
               </span>
               <span className={styles.heroPill}>{copy.pillRemote}</span>
+              <span className={`${styles.heroPill} ${styles.heroPillNote}`}>
+                <span className={styles.heroPillIcon} aria-hidden="true">
+                  i
+                </span>
+                {copy.pillPrices}
+              </span>
             </div>
           </div>
         </section>
@@ -181,19 +185,6 @@ export default function ServicesList({ services }: { services: ServiceCard[] }) 
                 </div>
               </section>
             )}
-
-            {/* Fiyatların kesin olmadığını kartlardan önce, görülecek yerde söyle. */}
-            <section className={styles.notice}>
-              <div className={`${styles.inner} ${styles.noticeInner}`}>
-                <span className={styles.noticeIcon} aria-hidden="true">
-                  i
-                </span>
-                <p className={styles.noticeText}>
-                  <strong className={styles.noticeTitle}>{copy.noticeTitle}.</strong>{" "}
-                  {copy.noticeText}
-                </p>
-              </div>
-            </section>
 
             {shownCategories.map((category, index) => {
               const items = services.filter((s) => s.category === category);

@@ -123,6 +123,27 @@
   font-size: 0.88rem;
   font-weight: 500;
 }
+/* Fiyat uyarısı: aynı rozet sırasında ama camgöbeği kenarlıkla ayrışıyor,
+   böylece metadata değil not olduğu anlaşılıyor. */
+.heroPillNote {
+  border-color: color-mix(in oklab, var(--cyan) 60%, transparent);
+  background: color-mix(in oklab, var(--cyan) 14%, rgba(10, 10, 15, 0.55));
+  color: #e6f7ff;
+}
+.heroPillIcon {
+  display: grid;
+  place-items: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border: 2px solid var(--cyan);
+  border-radius: 50%;
+  color: var(--cyan);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.62rem;
+  line-height: 1;
+}
+
 .heroPillDot {
   width: 8px;
   height: 8px;
@@ -178,53 +199,6 @@
 .filterChip:focus-visible {
   outline: 0;
   box-shadow: var(--ring);
-}
-
-/* === Fiyat uyarı şeridi =================================================== */
-
-.notice {
-  position: relative;
-  padding: clamp(0.9rem, 2vw, 1.15rem) 0;
-  background: linear-gradient(
-    100deg,
-    color-mix(in oklab, var(--cyan) 16%, #0a0a0f) 0%,
-    color-mix(in oklab, var(--cyan) 6%, #0a0a0f) 60%,
-    #0a0a0f 100%
-  );
-  border-bottom: 2px solid color-mix(in oklab, var(--cyan) 30%, var(--border));
-}
-.noticeInner {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.8rem;
-}
-.noticeIcon {
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  width: 1.6rem;
-  height: 1.6rem;
-  margin-top: 0.1rem;
-  border: 2px solid var(--cyan);
-  border-radius: 50%;
-  color: var(--cyan);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.85rem;
-  line-height: 1;
-}
-.noticeTitle {
-  color: var(--cyan);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-.noticeText {
-  max-width: 88ch;
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 450;
-  line-height: 1.6;
-  color: #cfd6f5;
 }
 
 /* === Kategori başlığı: tam genişlik bant ================================= */

@@ -149,20 +149,26 @@ describe("ServicesList", () => {
     expect(screen.getByText("evrenselyapi.com.tr")).toBeInTheDocument();
   });
 
-  it("fiyatların değişebileceği uyarısını kartlardan önce gösterir", () => {
+  it("fiyat uyarısını hero rozetleri arasında, kartlardan önce gösterir", () => {
     renderList([makeService()]);
-    expect(screen.getByText(/Fiyatlar değişebilir/)).toBeInTheDocument();
-    expect(screen.getByText(/Kesin rakam, ihtiyacınızı konuştuktan sonra/)).toBeInTheDocument();
+    const rozet = screen.getByText(/Fiyatlar kapsama göre değişir/);
+    expect(rozet).toBeInTheDocument();
 
     // Uyarı, DOM sırasında ilk hizmet kartından önce gelmeli.
-    const notice = screen.getByText(/Fiyatlar değişebilir/);
     const card = screen.getByText("Satış Altyapılı Web Sitesi");
-    expect(notice.compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(rozet.compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it("hizmet yokken uyarı şeridini göstermez", () => {
+  it("uyarının ayrıntısı sayfa sonundaki dipnotta duruyor", () => {
+    renderList([makeService()]);
+    expect(
+      screen.getByText(/Kesin rakam, ihtiyacınızı konuştuktan sonra/)
+    ).toBeInTheDocument();
+  });
+
+  it("hizmet yokken bile fiyat uyarısı hero'da kalır", () => {
     renderList([]);
-    expect(screen.queryByText(/Fiyatlar değişebilir/)).not.toBeInTheDocument();
+    expect(screen.getByText(/Fiyatlar kapsama göre değişir/)).toBeInTheDocument();
   });
 
   it("referansı olmayan hizmette referans bloğu çıkmaz", () => {
