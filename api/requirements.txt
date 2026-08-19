@@ -1,14 +1,17 @@
-fastapi==0.121.0
+fastapi==0.141.1
 uvicorn[standard]==0.37.0
 SQLAlchemy==2.0.43
 psycopg2-binary==2.9.10
 alembic==1.16.4
 pydantic-settings==2.7.1
-PyJWT==2.12.0
+PyJWT==2.13.0
 bcrypt==4.2.1
-python-multipart==0.0.27
+python-multipart==0.0.30
 nh3==0.2.21
 python-slugify==8.0.4
-# Guvenlik tabani: starlette FastAPI'nin transitive bagimliligi; CVE-2025-62727
-# (Range header DoS) 0.49.1'de yamandi. fastapi>=0.121.0 starlette<0.50'ye izin verir.
-starlette>=0.49.1
+# Guvenlik tabani: starlette FastAPI'nin transitive bagimliligi.
+# CVE-2026-48818 (UNC yolu uzerinden SSRF + NTLM kimlik sizintisi) ve
+# CVE-2026-54283 (request.form() limitlerinin sessizce yok sayilmasi)
+# 1.3.1'de yamandi. fastapi 0.141.1 "starlette>=0.46.0" der, ust sinir koymaz;
+# bu yuzden 1.x kurulabiliyor. fastapi'yi dusurursen bu satiri da gozden gecir.
+starlette>=1.3.1
