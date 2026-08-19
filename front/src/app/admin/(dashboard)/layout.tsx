@@ -30,6 +30,9 @@ export default async function DashboardLayout({
               <Link href="/admin/projects" className="text-[var(--muted)] hover:text-[var(--text)]">
                 Projeler
               </Link>
+              <Link href="/admin/services" className="text-[var(--muted)] hover:text-[var(--text)]">
+                Hizmetler
+              </Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">

@@ -1,0 +1,614 @@
+/* === Hizmetler sayfası ==================================================== */
+/* Zemin üç katman: dikey gradient + radyal ışıklar + tarama çizgisi dokusu.  */
+
+.page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--navy) 0%, var(--bg) 45%, var(--navy) 100%);
+  color: var(--text);
+  font-weight: 460;
+}
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 45% at 50% 0%, rgba(122, 60, 255, 0.28) 0%, transparent 62%),
+    radial-gradient(55% 40% at 92% 12%, rgba(255, 45, 85, 0.18) 0%, transparent 58%),
+    radial-gradient(60% 45% at 5% 88%, rgba(0, 229, 255, 0.14) 0%, transparent 60%);
+}
+.page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.035) 0 1px,
+    transparent 1px 3px
+  );
+  mix-blend-mode: soft-light;
+  opacity: 0.7;
+}
+
+.inner {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 1.5rem);
+}
+
+/* === Hero: tam genişlik doygun bant ====================================== */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.9rem, 4vw, 2.9rem) 0 clamp(1.6rem, 3vw, 2.3rem);
+  background:
+    linear-gradient(135deg, rgba(122, 60, 255, 0.42) 0%, rgba(255, 45, 85, 0.24) 55%, rgba(0, 229, 255, 0.16) 100%),
+    linear-gradient(180deg, #0d1024, #0a0a0f);
+  border-bottom: 4px solid transparent;
+  border-image: linear-gradient(90deg, var(--purple), var(--red), var(--cyan)) 1;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 64px);
+  mask-image: radial-gradient(75% 75% at 50% 40%, #000 0%, transparent 78%);
+}
+/* Sürekli yaşayan hareket: bant üzerinden geçen ışık. */
+.hero::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 42%;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.09), transparent);
+  animation: sweep 9s linear infinite;
+}
+@keyframes sweep {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--cyan);
+  margin-bottom: 0.6rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3.6vw, 2.5rem);
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 18px rgba(122, 60, 255, 0.6);
+  margin-bottom: 0.6rem;
+}
+
+.lead {
+  max-width: 62ch;
+  font-size: clamp(0.94rem, 1.1vw, 1.02rem);
+  font-weight: 460;
+  line-height: 1.65;
+  color: #cfd6f5;
+}
+
+.heroMeta {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+.heroPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(10, 10, 15, 0.55);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+.heroPillDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.8); }
+}
+
+/* === Kategori filtresi =================================================== */
+
+.filterBar {
+  position: relative;
+  padding: 1rem 0;
+  background: linear-gradient(180deg, rgba(18, 20, 33, 0.95), rgba(10, 10, 15, 0.6));
+  border-bottom: 2px solid var(--border);
+}
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.filterChip {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease,
+    transform 0.18s ease;
+}
+.filterChip:hover {
+  color: var(--text);
+  border-color: color-mix(in oklab, var(--purple) 60%, var(--border));
+  transform: translateY(-1px);
+}
+.filterChipActive {
+  background: linear-gradient(180deg, rgba(122, 60, 255, 0.55), rgba(255, 45, 85, 0.32));
+  border-color: var(--purple);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(122, 60, 255, 0.5);
+}
+.filterChip:focus-visible {
+  outline: 0;
+  box-shadow: var(--ring);
+}
+
+/* === Fiyat uyarı şeridi =================================================== */
+
+.notice {
+  position: relative;
+  padding: clamp(0.9rem, 2vw, 1.15rem) 0;
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklab, var(--cyan) 16%, #0a0a0f) 0%,
+    color-mix(in oklab, var(--cyan) 6%, #0a0a0f) 60%,
+    #0a0a0f 100%
+  );
+  border-bottom: 2px solid color-mix(in oklab, var(--cyan) 30%, var(--border));
+}
+.noticeInner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+.noticeIcon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-top: 0.1rem;
+  border: 2px solid var(--cyan);
+  border-radius: 50%;
+  color: var(--cyan);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+.noticeTitle {
+  color: var(--cyan);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.noticeText {
+  max-width: 88ch;
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 450;
+  line-height: 1.6;
+  color: #cfd6f5;
+}
+
+/* === Kategori başlığı: tam genişlik bant ================================= */
+
+.categorySection {
+  padding-top: 0;
+}
+/* İlk kategori bandı üstündeki şeride bitişsin; araya boş alan girmesin.
+   (:first-of-type burada hero'yu sayardı, o yüzden sınıf bileşenden veriliyor.) */
+.categorySectionFirst .categoryBand {
+  margin-top: 0;
+}
+.categoryBand {
+  position: relative;
+  padding: clamp(1.1rem, 2.4vw, 1.5rem) 0;
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklab, var(--accent) 42%, #0a0a0f) 0%,
+    color-mix(in oklab, var(--accent) 14%, #0a0a0f) 70%,
+    #0a0a0f 100%
+  );
+  border-top: 3px solid color-mix(in oklab, var(--accent) 70%, transparent);
+  border-bottom: 3px solid color-mix(in oklab, var(--accent) 35%, var(--border));
+  margin-top: clamp(1.1rem, 2.4vw, 1.7rem);
+}
+.categoryTitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.categoryCount {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.6rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  color: #fff;
+}
+
+/* === Hizmet kartları ===================================================== */
+
+.grid {
+  display: grid;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  padding-top: clamp(1.2rem, 3vw, 1.8rem);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(160deg, color-mix(in oklab, var(--accent) 12%, var(--surface-2)) 0%, var(--surface) 62%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent) 25%, transparent));
+}
+.card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in oklab, var(--accent) 65%, var(--border));
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.55), 0 0 22px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+.cardFeatured {
+  border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1.25rem 1.25rem 0.9rem 1.5rem;
+}
+.cardIcon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.5rem;
+  border: 2px solid color-mix(in oklab, var(--accent) 45%, var(--border));
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--accent) 18%, #0a0a0f);
+}
+.cardName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+}
+.featuredTag {
+  display: inline-block;
+  margin-top: 0.35rem;
+  padding: 0.1rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #0a0a0f;
+  background: var(--cyan);
+  border-radius: 4px;
+}
+
+.cardDesc {
+  padding: 0 1.25rem 0 1.5rem;
+  color: var(--muted);
+  font-weight: 450;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Fiyat levhası: kartın içinde ayrı malzeme. */
+.priceSlab {
+  margin: 1.1rem 1.25rem 0 1.5rem;
+  padding: 0.95rem 1.1rem;
+  border: 2px solid color-mix(in oklab, var(--accent) 30%, var(--border));
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(10, 10, 15, 0.85), rgba(10, 10, 15, 0.55));
+}
+.priceRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1.4rem;
+}
+.priceLabel {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.15rem;
+}
+.priceValue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.35rem, 2.4vw, 1.7rem);
+  line-height: 1.1;
+  color: var(--text);
+}
+.priceMonthly .priceValue {
+  color: var(--cyan);
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+}
+.priceQuote {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--cyan);
+}
+.priceNote {
+  margin-top: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.delivery {
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+  border-top: 2px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.deliveryLabel {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Kapsam: açılır bölüm */
+.toggle {
+  margin: 1rem 1.25rem 0 1.5rem;
+  padding: 0.6rem 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: calc(100% - 2.75rem);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+.toggle:hover {
+  border-color: color-mix(in oklab, var(--accent) 60%, var(--border));
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+}
+.toggle:focus-visible {
+  outline: 0;
+  box-shadow: var(--ring);
+}
+.toggleIcon {
+  transition: transform 0.22s ease;
+  font-size: 0.7rem;
+}
+.toggleIconOpen {
+  transform: rotate(180deg);
+}
+
+.features {
+  list-style: none;
+  margin: 0.9rem 1.25rem 0 1.5rem;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+.featureItem {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 0.92rem;
+  font-weight: 450;
+  line-height: 1.5;
+  color: var(--text);
+}
+.featureItem::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--accent) 60%, transparent);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1rem 1.25rem 0 1.5rem;
+}
+.tag {
+  padding: 0.2rem 0.6rem;
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--cyan);
+}
+
+.cardFoot {
+  margin-top: auto;
+  padding: 1.2rem 1.25rem 1.25rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.references {
+  margin: 1rem 1.25rem 0 1.5rem;
+  padding: 0.75rem 0.9rem;
+  border: 2px solid color-mix(in oklab, var(--accent) 28%, var(--border));
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--accent) 10%, rgba(10, 10, 15, 0.6));
+}
+.referencesLabel {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.referenceRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.referenceChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border: 2px solid color-mix(in oklab, var(--accent) 55%, var(--border));
+  border-radius: 8px;
+  background: rgba(10, 10, 15, 0.55);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+.referenceChip:hover {
+  background: color-mix(in oklab, var(--accent) 28%, transparent);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+.referenceChip:focus-visible {
+  outline: 0;
+  box-shadow: var(--ring);
+}
+
+/* === Kapanış bandı ======================================================= */
+
+.ctaBand {
+  position: relative;
+  overflow: hidden;
+  margin-top: clamp(3rem, 7vw, 5rem);
+  padding: clamp(2.5rem, 6vw, 4rem) 0;
+  background:
+    linear-gradient(120deg, rgba(0, 229, 255, 0.2) 0%, rgba(122, 60, 255, 0.45) 48%, rgba(255, 45, 85, 0.3) 100%),
+    linear-gradient(180deg, #0d1024, #0a0a0f);
+  border-top: 4px solid transparent;
+  border-image: linear-gradient(90deg, var(--cyan), var(--purple), var(--red)) 1;
+  text-align: center;
+}
+.ctaTitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.4rem, 3.2vw, 2.1rem);
+  margin-bottom: 0.7rem;
+  text-shadow: 0 0 16px rgba(122, 60, 255, 0.55);
+}
+.ctaText {
+  max-width: 52ch;
+  margin: 0 auto 1.6rem;
+  color: #cfd6f5;
+  font-weight: 460;
+  line-height: 1.65;
+}
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.empty {
+  padding: clamp(3rem, 8vw, 5rem) 0;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 460;
+}
+
+.footnote {
+  padding: 1.5rem 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::after,
+  .heroPillDot {
+    animation: none;
+  }
+  .card,
+  .filterChip,
+  .toggleIcon,
+  .referenceChip {
+    transition: none;
+  }
+}

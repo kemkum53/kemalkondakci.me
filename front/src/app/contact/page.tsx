@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLanguage } from "@/lib/language-context";
 import styles from "../home.module.css";
 import contactStyles from "./contact.module.css";
@@ -8,17 +9,28 @@ import contactStyles from "./contact.module.css";
 // Add metadata for SEO
 export const dynamic = 'force-dynamic';
 
-export default function ContactPage() {
+function ContactPageInner() {
   const { t, lang, isTransitioning } = useLanguage();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
-    company: "" // honeypot (gizli) — botlar doldurur, gerçek kullanıcı boş bırakır
+    company: "" // honeypot (gizli), botlar doldurur, gercek kullanici bos birakir
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  // /services sayfasindaki "Teklif al" butonu hizmet adini ?subject= ile tasir.
+  // Ilk render'da degil, hidrasyondan sonra doldurulur (sunucu/istemci farki olmasin).
+  const subjectParam = searchParams.get("subject");
+  useEffect(() => {
+    if (!subjectParam) return;
+    setFormData((prev) =>
+      prev.subject ? prev : { ...prev, subject: subjectParam.slice(0, 150) }
+    );
+  }, [subjectParam]);
 
   // Update document title based on language
   useEffect(() => {
@@ -250,5 +262,13 @@ export default function ContactPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+export default function ContactPage() {
+  return (
+    <Suspense fallback={null}>
+      <ContactPageInner />
+    </Suspense>
   );
 }

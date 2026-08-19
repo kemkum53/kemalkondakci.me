@@ -28,10 +28,11 @@ export default function KatanaNavbar({
     { href: "/", label: t.navbar.home },
     { href: "/cv", label: t.navbar.cv },
     { href: "/projects", label: t.navbar.projects },
+    { href: "/services", label: t.navbar.services },
     { href: "/blog", label: t.navbar.blog },
     { href: "/contact", label: t.navbar.contact },
   ];
-  const defaultCta = cta || { href: "/hire", label: t.navbar.hireMe };
+  const defaultCta = cta || { href: "/services", label: t.navbar.hireMe };
 
   const toggleLanguage = () => {
     setLang(lang === "en" ? "tr" : "en");

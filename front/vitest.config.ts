@@ -4,6 +4,9 @@ import { fileURLToPath } from "node:url";
 
 export default defineConfig({
   plugins: [react()],
+  // Testte Tailwind/PostCSS zincirini çalıştırma; CSS modülleri sınıf adı
+  // döndüren bir vekille yer değiştirir, stiller zaten doğrulanmıyor.
+  css: { postcss: { plugins: [] } },
   test: {
     environment: "jsdom",
     globals: true,
