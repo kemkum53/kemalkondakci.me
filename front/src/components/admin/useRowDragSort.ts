@@ -25,28 +25,35 @@ export function useRowDragSort<T extends WithId>(
   onCommit: (ids: string[]) => void
 ) {
   const [order, setOrder] = useState<T[]>(items);
+  // order'ın güncel hali; commit'i render/updater dışında okumak için.
+  const orderRef = useRef<T[]>(items);
   const dragId = useRef<string | null>(null);
   const movedDuringDrag = useRef(false);
+
+  function applyOrder(next: T[]) {
+    orderRef.current = next;
+    setOrder(next);
+  }
 
   // Dışarıdan gelen liste değişince (kaydet, revalidate) yerel sırayı tazele,
   // ama aktif bir sürükleme varken üzerine yazma.
   useEffect(() => {
     if (dragId.current === null) {
+      orderRef.current = items;
       setOrder(items);
     }
   }, [items]);
 
   function move(fromId: string, toId: string) {
     if (fromId === toId) return;
-    setOrder((prev) => {
-      const from = prev.findIndex((x) => x.id === fromId);
-      const to = prev.findIndex((x) => x.id === toId);
-      if (from === -1 || to === -1) return prev;
-      const next = [...prev];
-      const [row] = next.splice(from, 1);
-      next.splice(to, 0, row);
-      return next;
-    });
+    const prev = orderRef.current;
+    const from = prev.findIndex((x) => x.id === fromId);
+    const to = prev.findIndex((x) => x.id === toId);
+    if (from === -1 || to === -1) return;
+    const next = [...prev];
+    const [row] = next.splice(from, 1);
+    next.splice(to, 0, row);
+    applyOrder(next);
     movedDuringDrag.current = true;
   }
 
@@ -74,12 +81,8 @@ export function useRowDragSort<T extends WithId>(
         const changed = movedDuringDrag.current;
         dragId.current = null;
         movedDuringDrag.current = false;
-        if (changed) {
-          setOrder((current) => {
-            onCommit(current.map((x) => x.id));
-            return current;
-          });
-        }
+        // Commit render dışında, event handler içinde: startTransition güvenli.
+        if (changed) onCommit(orderRef.current.map((x) => x.id));
       },
     };
   }
