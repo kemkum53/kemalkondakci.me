@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useLanguage } from "@/lib/language-context";
+import FlagIcon from "@/components/FlagIcon";
 
 export type NavLink = { href: string; label: string; prefetch?: boolean };
 
@@ -122,7 +123,7 @@ export default function KatanaNavbar({
               minHeight: '44px'
             }}
           >
-            {isTransitioning ? "⚡" : lang === "en" ? "TR" : "EN"}
+            {isTransitioning ? "⚡" : <FlagIcon country={lang === "en" ? "tr" : "gb"} />}
           </button>
         </nav>
 
@@ -187,7 +188,7 @@ export default function KatanaNavbar({
             width: 'auto'
           }}
         >
-          {isTransitioning ? "⚡" : lang === "en" ? "TR" : "EN"}
+          {isTransitioning ? "⚡" : <FlagIcon country={lang === "en" ? "tr" : "gb"} />}
         </button>
       </div>
     </div>

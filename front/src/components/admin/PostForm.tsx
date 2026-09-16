@@ -2,6 +2,7 @@
 
 import { useActionState, useCallback, useRef, useState } from "react";
 import RichTextEditor from "./Editor";
+import FlagIcon from "@/components/FlagIcon";
 import {
   savePost,
   autosaveDraft,
@@ -119,7 +120,10 @@ export default function PostForm({ post }: { post?: PostFormData }) {
                   : "bg-[var(--surface)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]"
               }`}
             >
-              {lang === "tr" ? "Türkçe" : "English"}
+              <span className="inline-flex items-center gap-1.5">
+                <FlagIcon country={lang === "tr" ? "tr" : "gb"} />
+                {lang === "tr" ? "Türkçe" : "English"}
+              </span>
             </button>
           ))}
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import FlagIcon from "@/components/FlagIcon";
 import { saveService, type ServiceFormState } from "@/app/admin/services/actions";
 import {
   CATEGORY_LABELS,
@@ -119,7 +120,10 @@ export default function ServiceForm({ service }: { service?: ServiceFormData }) 
                 : "bg-[var(--surface)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]"
             }`}
           >
-            {lang === "tr" ? "Türkçe" : "English"}
+            <span className="inline-flex items-center gap-1.5">
+              <FlagIcon country={lang === "tr" ? "tr" : "gb"} />
+              {lang === "tr" ? "Türkçe" : "English"}
+            </span>
           </button>
         ))}
       </div>
