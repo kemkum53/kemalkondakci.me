@@ -206,42 +206,41 @@
 .categorySection {
   padding-top: 0;
 }
-/* İlk kategori bandı üstündeki şeride bitişsin; araya boş alan girmesin.
-   (:first-of-type burada hero'yu sayardı, o yüzden sınıf bileşenden veriliyor.) */
+/* İlk bant filtre çubuğuna yapışmasın ama araya büyük boşluk da girmesin. */
 .categorySectionFirst .categoryBand {
-  margin-top: 0;
+  margin-top: clamp(1rem, 2vw, 1.4rem);
 }
 .categoryBand {
   position: relative;
-  padding: clamp(1.1rem, 2.4vw, 1.5rem) 0;
-  background: linear-gradient(
-    100deg,
-    color-mix(in oklab, var(--accent) 42%, #0a0a0f) 0%,
-    color-mix(in oklab, var(--accent) 14%, #0a0a0f) 70%,
-    #0a0a0f 100%
-  );
-  border-top: 3px solid color-mix(in oklab, var(--accent) 70%, transparent);
-  border-bottom: 3px solid color-mix(in oklab, var(--accent) 35%, var(--border));
-  margin-top: clamp(1.1rem, 2.4vw, 1.7rem);
+  margin-top: clamp(1.8rem, 4vw, 2.8rem);
+  padding-top: clamp(1.1rem, 2.4vw, 1.5rem);
+  border-top: 1px solid color-mix(in oklab, var(--accent) 35%, var(--border));
 }
 .categoryTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  letter-spacing: 0.02em;
+}
+.categoryTitle::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  flex: none;
+  transform: translateY(-0.15em) rotate(45deg);
+  background: var(--accent);
 }
 .categoryCount {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   letter-spacing: 0.06em;
-  padding: 0.15rem 0.6rem;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 0.1rem 0.55rem;
+  border: 1px solid color-mix(in oklab, var(--accent) 45%, var(--border));
   border-radius: 999px;
-  color: #fff;
+  color: color-mix(in oklab, var(--accent) 70%, #ffffff);
 }
 
 /* === Hizmet kartları ===================================================== */
