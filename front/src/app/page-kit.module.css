@@ -1,0 +1,295 @@
+/* === Sayfa kiti =========================================================== */
+/* Vitrin ve hizmetler sayfalarındaki görsel dilin paylaşılan hâli: gradient    */
+/* zemin, doygun hero bandı, ince çizgili bölüm başlığı, vurgu renkli kartlar.  */
+/* Sayfa kendi vurgu rengini main üzerinde --accent ile verir.                  */
+
+.page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--navy) 0%, var(--bg) 45%, var(--navy) 100%);
+  color: var(--text);
+  font-weight: 460;
+}
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 45% at 50% 0%, color-mix(in oklab, var(--accent) 28%, transparent) 0%, transparent 62%),
+    radial-gradient(55% 40% at 92% 12%, rgba(255, 45, 85, 0.14) 0%, transparent 58%),
+    radial-gradient(60% 45% at 5% 88%, rgba(0, 229, 255, 0.12) 0%, transparent 60%);
+}
+.page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 3px);
+  mix-blend-mode: soft-light;
+  opacity: 0.7;
+}
+
+.inner {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 1.5rem);
+}
+
+/* === Hero ================================================================= */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.9rem, 4vw, 2.9rem) 0 clamp(1.6rem, 3vw, 2.3rem);
+  background:
+    linear-gradient(135deg, color-mix(in oklab, var(--accent) 45%, transparent) 0%,
+      rgba(255, 45, 85, 0.22) 55%, rgba(0, 229, 255, 0.14) 100%),
+    linear-gradient(180deg, #0d1024, #0a0a0f);
+  border-bottom: 4px solid transparent;
+  border-image: linear-gradient(90deg, var(--accent), var(--red), var(--cyan)) 1;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 64px);
+  mask-image: radial-gradient(75% 75% at 50% 40%, #000 0%, transparent 78%);
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 42%;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.09), transparent);
+  animation: sweep 9s linear infinite;
+}
+@keyframes sweep {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--cyan);
+  margin-bottom: 0.6rem;
+}
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3.6vw, 2.5rem);
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 18px color-mix(in oklab, var(--accent) 60%, transparent);
+  margin-bottom: 0.6rem;
+}
+.lead {
+  max-width: 62ch;
+  font-size: clamp(0.94rem, 1.1vw, 1.02rem);
+  font-weight: 460;
+  line-height: 1.65;
+  color: #cfd6f5;
+}
+
+.heroMeta {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+.heroPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(10, 10, 15, 0.55);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+.heroPillDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+/* === Bölüm başlığı ======================================================== */
+
+.sectionBand {
+  position: relative;
+  margin-top: clamp(1.8rem, 4vw, 2.8rem);
+  padding-top: clamp(1.1rem, 2.4vw, 1.5rem);
+  border-top: 1px solid color-mix(in oklab, var(--accent) 35%, var(--border));
+}
+.sectionTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  letter-spacing: 0.02em;
+}
+.sectionTitle::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  flex: none;
+  transform: translateY(-0.15em) rotate(45deg);
+  background: var(--accent);
+}
+.sectionCount {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.1rem 0.55rem;
+  border: 1px solid color-mix(in oklab, var(--accent) 45%, var(--border));
+  border-radius: 999px;
+  color: color-mix(in oklab, var(--accent) 70%, #ffffff);
+}
+
+/* === Kartlar ============================================================== */
+
+.grid {
+  display: grid;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+  padding: clamp(1.4rem, 3vw, 2rem) 0 clamp(2.4rem, 5vw, 3.4rem);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(160deg,
+    color-mix(in oklab, var(--accent) 12%, var(--surface)) 0%, var(--surface) 62%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  z-index: 1;
+  background: linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent) 25%, transparent));
+}
+.card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in oklab, var(--accent) 65%, var(--border));
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.55), 0 0 22px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+.card:focus-visible {
+  outline: 0;
+  box-shadow: var(--ring);
+}
+
+.cardCover {
+  display: block;
+  width: 100%;
+  height: clamp(9rem, 18vw, 11.5rem);
+  object-fit: cover;
+  object-position: top center;
+  border-bottom: 2px solid var(--border);
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.55rem;
+  padding: 1.1rem 1.2rem 1.2rem 1.5rem;
+}
+.cardMeta {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cardTitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+}
+.cardDesc {
+  color: var(--muted);
+  font-size: 0.93rem;
+  line-height: 1.6;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.2rem;
+}
+.chip {
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.76rem;
+  color: var(--cyan);
+}
+.chipArea {
+  border-color: color-mix(in oklab, var(--accent) 50%, var(--border));
+  color: color-mix(in oklab, var(--accent) 70%, #ffffff);
+}
+
+.cardLinks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 0.9rem;
+  font-size: 0.88rem;
+}
+.cardLink {
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.cardLink:hover {
+  color: var(--text);
+  border-bottom-color: currentColor;
+}
+.cardLinkStrong {
+  margin-left: auto;
+  color: var(--cyan);
+  font-weight: 600;
+}
+
+.empty {
+  padding: clamp(1.6rem, 3.5vw, 2.4rem) 0 clamp(2.4rem, 5vw, 3.4rem);
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 62ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::after { animation: none; }
+  .card:hover { transform: none; }
+}

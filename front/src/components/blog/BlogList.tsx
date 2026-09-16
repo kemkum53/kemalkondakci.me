@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLanguage } from "@/lib/language-context";
+import styles from "@/app/page-kit.module.css";
 
 export type PostCard = {
   slug: string;
@@ -13,23 +14,30 @@ export type PostCard = {
   publishedAt: string | null;
 };
 
+const COPY = {
+  tr: {
+    eyebrow: "Blog",
+    title: "Yaparken öğrendiklerim",
+    lead: "Yapay zekâ, yazılım ve sunucu tarafında çalışırken çıkan notlar. Genelde bir işi bitirdikten sonra, ne işe yaradığını hatırlamak için yazıyorum.",
+    sectionTitle: "Yazılar",
+    empty: "Henüz yayınlanmış bir yazı yok. Yakında burada olacak.",
+    read: "Devamını oku",
+  },
+  en: {
+    eyebrow: "Blog",
+    title: "What I learn while building",
+    lead: "Notes from working on AI, software and servers. Usually written after finishing something, to remember what actually helped.",
+    sectionTitle: "Posts",
+    empty: "No published posts yet. Coming soon.",
+    read: "Read more",
+  },
+} as const;
+
 export default function BlogList({ posts }: { posts: PostCard[] }) {
   const { lang, isTransitioning } = useLanguage();
+  const copy = COPY[lang];
 
-  const copy = {
-    tr: {
-      title: "Blog",
-      subtitle: "AI, yazılım ve teknoloji üzerine yazılarım.",
-      empty: "Henüz yayınlanmış bir yazı yok. Yakında burada olacak.",
-    },
-    en: {
-      title: "Blog",
-      subtitle: "My writing on AI, software and technology.",
-      empty: "No published posts yet. Coming soon.",
-    },
-  }[lang];
-
-  const dateFmt = (iso: string | null) =>
+  const formatDate = (iso: string | null) =>
     iso
       ? new Date(iso).toLocaleDateString(lang === "tr" ? "tr-TR" : "en-US", {
           year: "numeric",
@@ -40,42 +48,55 @@ export default function BlogList({ posts }: { posts: PostCard[] }) {
 
   return (
     <div className={`ktn-scope language-transition ${isTransitioning ? "transitioning" : ""}`}>
-      <main className="content-fade-in min-h-screen bg-[var(--bg)] px-4 py-16">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="ktn-glitch font-display text-4xl md:text-5xl text-[var(--text)] mb-3" data-text={copy.title}>
-            {copy.title}
-          </h1>
-          <p className="text-[var(--purple)] mb-10">{copy.subtitle}</p>
+      <main
+        className={`${styles.page} content-fade-in`}
+        style={{ ["--accent" as string]: "#00E5FF" }}
+      >
+        <section className={styles.hero}>
+          <div className={styles.inner}>
+            <p className={styles.eyebrow}>{copy.eyebrow}</p>
+            <h1 className={styles.title}>{copy.title}</h1>
+            <p className={styles.lead}>{copy.lead}</p>
+          </div>
+        </section>
+
+        <div className={styles.sectionBand}>
+          <div className={styles.inner}>
+            <h2 className={styles.sectionTitle}>
+              {copy.sectionTitle}
+              {posts.length > 0 && <span className={styles.sectionCount}>{posts.length}</span>}
+            </h2>
+          </div>
+        </div>
+
+        <div className={styles.inner}>
 
           {posts.length === 0 ? (
-            <p className="text-[var(--muted)]">{copy.empty}</p>
+            <p className={styles.empty}>{copy.empty}</p>
           ) : (
-            <div className="grid sm:grid-cols-2 gap-6">
+            <div className={styles.grid}>
               {posts.map((post) => {
                 const title = lang === "tr" ? post.titleTr : post.titleEn;
                 const excerpt = lang === "tr" ? post.excerptTr : post.excerptEn;
                 return (
-                  <Link
-                    key={post.slug}
-                    href={`/blog/${post.slug}`}
-                    className="flex flex-col bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden transition-colors hover:border-[var(--purple)]"
-                  >
+                  <Link key={post.slug} href={`/blog/${post.slug}`} className={styles.card}>
                     {post.coverImage && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={post.coverImage}
                         alt={title}
-                        className="w-full h-44 object-cover"
+                        className={styles.cardCover}
+                        loading="lazy"
                       />
                     )}
-                    <div className="flex flex-col flex-1 p-5">
+                    <div className={styles.cardBody}>
                       {post.publishedAt && (
-                        <div className="text-xs text-[var(--muted)] mb-2">{dateFmt(post.publishedAt)}</div>
+                        <p className={styles.cardMeta}>{formatDate(post.publishedAt)}</p>
                       )}
-                      <h2 className="font-display text-xl text-[var(--text)] mb-2">{title}</h2>
-                      {excerpt && <p className="text-[var(--muted)] text-sm leading-relaxed mb-3">{excerpt}</p>}
-                      <span className="mt-auto text-sm text-[var(--cyan)]">
-                        {lang === "tr" ? "Devamını oku →" : "Read more →"}
+                      <h3 className={styles.cardTitle}>{title}</h3>
+                      {excerpt && <p className={styles.cardDesc}>{excerpt}</p>}
+                      <span className={`${styles.cardLinks} ${styles.cardLink}`}>
+                        <span className={styles.cardLinkStrong}>{copy.read} →</span>
                       </span>
                     </div>
                   </Link>

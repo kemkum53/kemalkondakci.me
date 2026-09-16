@@ -9,6 +9,7 @@ export default async function ProjectsPage() {
   const cards: ProjectCard[] = projects.map((p) => ({
     slug: p.slug,
     name: p.name,
+    category: p.category,
     shortDescTr: p.shortDescTr,
     shortDescEn: p.shortDescEn,
     coverImage: p.coverImage,
