@@ -75,14 +75,14 @@ describe("ShowcaseAreaView", () => {
     expect(screen.queryByRole("main")).not.toBeInTheDocument();
   });
 
-  it("alanın başlığını ve ilerleyiş adımlarını gösterir", async () => {
+  it("alanın başlığını ve rozetlerini gösterir", async () => {
     renderArea("devops");
     expect(
       await screen.findByRole("heading", {
         name: "Sunucusu, yedeği ve dağıtımı düzgün kurulmuş sistemler",
       })
     ).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Taşıma ve otomasyon" })).toBeInTheDocument();
+    expect(screen.getByText("Docker ve CI/CD")).toBeInTheDocument();
   });
 
   it("vaka yoksa alana özel boş durum metnini gösterir", () => {

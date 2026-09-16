@@ -77,28 +77,6 @@ export default function ShowcaseAreaView({ area, cases, services }: Props) {
           </div>
         </section>
 
-        {/* Nasıl ilerliyor */}
-        <section>
-          <div className={styles.sectionBand}>
-            <div className={styles.inner}>
-              <h2 className={styles.sectionTitle}>{copy.stepsTitle}</h2>
-            </div>
-          </div>
-          <div className={styles.inner}>
-            <ol className={styles.steps}>
-              {copy.steps.map((step, i) => (
-                <li key={step.title} className={styles.step}>
-                  <span className={styles.stepNo} aria-hidden="true">
-                    {i + 1}
-                  </span>
-                  <h3 className={styles.stepTitle}>{step.title}</h3>
-                  <p className={styles.stepBody}>{step.body}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-
         {/* Vakalar */}
         <section>
           <div className={styles.sectionBand}>
