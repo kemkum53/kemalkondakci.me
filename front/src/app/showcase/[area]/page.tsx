@@ -77,11 +77,6 @@ export default async function ShowcaseAreaPage({
       nameEn: s.nameEn,
       shortDescTr: s.shortDescTr,
       shortDescEn: s.shortDescEn,
-      priceType: s.priceType,
-      setupPriceMin: s.setupPriceMin,
-      setupPriceMax: s.setupPriceMax,
-      monthlyPrice: s.monthlyPrice,
-      currency: s.currency,
     }));
 
   return (

@@ -42,11 +42,6 @@ function makeService(over: Partial<ServiceSummary> = {}): ServiceSummary {
     nameEn: "E-commerce Website",
     shortDescTr: "Ürün, sepet ve ödeme akışı olan site.",
     shortDescEn: "Site with catalog, cart and checkout.",
-    priceType: "from",
-    setupPriceMin: 45000,
-    setupPriceMax: null,
-    monthlyPrice: 2500,
-    currency: "TRY",
     ...over,
   };
 }
@@ -106,15 +101,15 @@ describe("ShowcaseAreaView", () => {
     expect(screen.queryByText("Tasarım, geliştirme, sunucu")).not.toBeInTheDocument();
   });
 
-  it("hizmet fiyatını kart üzerinde gösterir", () => {
+  it("alandaki hizmeti listeler, rakam göstermez", () => {
     renderArea("web", [], [makeService()]);
-    expect(screen.getByText("45.000 ₺")).toBeInTheDocument();
-    expect(screen.getByText("2.500 ₺")).toBeInTheDocument();
+    expect(screen.getByText("Satış Altyapılı Web Sitesi")).toBeInTheDocument();
+    expect(screen.queryByText(/₺/)).not.toBeInTheDocument();
   });
 
-  it("hizmet yoksa fiyat bölümünü hiç açmaz", () => {
+  it("hizmet yoksa hizmet bölümünü hiç açmaz", () => {
     renderArea("web", [makeCase()]);
-    expect(screen.queryByText("Bu alandaki hizmetler ve fiyatlar")).not.toBeInTheDocument();
+    expect(screen.queryByText("Bu alandaki hizmetler")).not.toBeInTheDocument();
   });
 
   it("galeri görseline tıklayınca büyük görseli açar, Esc kapatır", async () => {

@@ -7,11 +7,6 @@ BASE = {
     "shortDescEn": "Site with catalog, cart and checkout.",
     "featuresTr": ["Ödeme entegrasyonu", "Yönetim paneli", " "],
     "featuresEn": ["Payment integration", "Admin panel"],
-    "priceType": "range",
-    "setupPriceMin": 45000,
-    "setupPriceMax": 90000,
-    "monthlyPrice": 2500,
-    "currency": "TRY",
     "deliveryMinDays": 21,
     "deliveryMaxDays": 35,
     "references": [{"label": "korede.com.tr", "url": "https://korede.com.tr"}],
@@ -36,9 +31,6 @@ def test_create_published(client, auth_headers):
     assert data["slug"] == "satis-altyapili-web-sitesi"
     assert data["status"] == "published"
     assert data["publishedAt"] is not None
-    assert data["setupPriceMin"] == 45000
-    assert data["setupPriceMax"] == 90000
-    assert data["monthlyPrice"] == 2500
     assert data["deliveryMinDays"] == 21
     assert data["references"] == [
         {"label": "korede.com.tr", "url": "https://korede.com.tr"}
@@ -54,42 +46,9 @@ def test_blank_features_are_dropped(client, auth_headers):
     assert data["featuresTr"] == ["Ödeme entegrasyonu", "Yönetim paneli"]
 
 
-def test_quote_price_type_clears_amounts(client, auth_headers):
-    """Teklife göre seçilirse rakamlar API'den hiç dönmemeli."""
-    data = _create(client, auth_headers, priceType="quote").json()
-    assert data["setupPriceMin"] is None
-    assert data["setupPriceMax"] is None
-    assert data["monthlyPrice"] is None
-
-
-def test_from_price_type_drops_max(client, auth_headers):
-    """'X'ten başlar' tipinde üst sınır anlamsız; temizlenir."""
-    data = _create(client, auth_headers, priceType="from").json()
-    assert data["setupPriceMin"] == 45000
-    assert data["setupPriceMax"] is None
-    assert data["monthlyPrice"] == 2500
-
-
-def test_rejects_inverted_price_range(client, auth_headers):
-    res = _create(client, auth_headers, setupPriceMin=90000, setupPriceMax=45000)
-    assert res.status_code == 422
-
-
 def test_rejects_inverted_delivery_range(client, auth_headers):
     res = _create(client, auth_headers, deliveryMinDays=40, deliveryMaxDays=10)
     assert res.status_code == 422
-
-
-def test_rejects_negative_price(client, auth_headers):
-    assert _create(client, auth_headers, setupPriceMin=-1).status_code == 422
-
-
-def test_rejects_bad_price_type(client, auth_headers):
-    assert _create(client, auth_headers, priceType="haggle").status_code == 422
-
-
-def test_rejects_bad_currency(client, auth_headers):
-    assert _create(client, auth_headers, currency="XXX").status_code == 422
 
 
 def test_unknown_category_falls_back_to_other(client, auth_headers):
@@ -137,12 +96,12 @@ def test_update_service(client, auth_headers):
     s = _create(client, auth_headers).json()
     res = client.put(
         f"/api/admin/services/{s['id']}",
-        json={**BASE, "nameTr": "Güncel Ad", "setupPriceMin": 50000},
+        json={**BASE, "nameTr": "Güncel Ad", "deliveryMinDays": 10},
         headers=auth_headers,
     )
     assert res.status_code == 200
     assert res.json()["nameTr"] == "Güncel Ad"
-    assert res.json()["setupPriceMin"] == 50000
+    assert res.json()["deliveryMinDays"] == 10
 
 
 def test_toggle_publish(client, auth_headers):

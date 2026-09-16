@@ -44,3 +44,6 @@ logs/
 
 # Ekran goruntusu araci ciktisi
 shots/
+
+# Fiyat alanlari kaldirilmadan onceki canli veri yedegi (repoya girmez)
+fiyat-yedegi.json

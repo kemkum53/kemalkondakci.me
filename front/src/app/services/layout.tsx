@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "Hizmetler ve Fiyatlar";
+  const title = "Hizmetler";
   const description =
-    "Satış altyapılı ve kurumsal web siteleri, veritabanına bağlanan chatbot sistemleri, otomasyon ve DevOps işleri. Kapsam, teslim süresi ve fiyatlarıyla.";
+    "Satış altyapılı ve kurumsal web siteleri, veritabanına bağlanan chatbot sistemleri, otomasyon ve DevOps işleri. Kapsam ve teslim süreleriyle.";
 
   return {
     title,

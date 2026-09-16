@@ -6,8 +6,6 @@ import ServiceRowActions from "./ServiceRowActions";
 import {
   CATEGORY_LABELS,
   formatDelivery,
-  formatPrice,
-  quoteLabel,
   type ServiceCategory,
 } from "@/lib/service-format";
 
@@ -19,11 +17,6 @@ export type AdminService = {
   category: string;
   status: string;
   featured: boolean;
-  priceType: string;
-  setupPriceMin: number | null;
-  setupPriceMax: number | null;
-  monthlyPrice: number | null;
-  currency: string;
   deliveryMinDays: number | null;
   deliveryMaxDays: number | null;
   deliveryNoteTr: string;
@@ -34,14 +27,6 @@ function categoryLabel(category: string): string {
 }
 
 /** Tabloda tek satıra sığacak kısa fiyat özeti. */
-function priceSummary(s: AdminService): string {
-  const p = formatPrice(s, "tr");
-  if (p.isQuote) return quoteLabel("tr");
-  const parts: string[] = [];
-  if (p.setupValue) parts.push(p.setupValue);
-  if (p.monthlyValue) parts.push(`+ ${p.monthlyValue}/ay`);
-  return parts.join(" ");
-}
 
 export default function ServicesTable({ services }: { services: AdminService[] }) {
   const [query, setQuery] = useState("");
@@ -77,7 +62,6 @@ export default function ServicesTable({ services }: { services: AdminService[] }
             <thead className="bg-[var(--surface)] text-sm text-[var(--muted)]">
               <tr>
                 <th className="px-4 py-3 font-medium">Hizmet</th>
-                <th className="px-4 py-3 font-medium hidden md:table-cell">Fiyat</th>
                 <th className="px-4 py-3 font-medium hidden lg:table-cell">Süre</th>
                 <th className="px-4 py-3 font-medium">Durum</th>
                 <th className="px-4 py-3 font-medium text-right">İşlem</th>
@@ -98,9 +82,6 @@ export default function ServicesTable({ services }: { services: AdminService[] }
                     <div className="text-xs text-[var(--muted)] mt-0.5">
                       {categoryLabel(s.category)} · /{s.slug}
                     </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-[var(--text)] hidden md:table-cell">
-                    {priceSummary(s)}
                   </td>
                   <td className="px-4 py-3 text-sm text-[var(--muted)] hidden lg:table-cell">
                     {formatDelivery({ ...s, deliveryNoteEn: "" }, "tr") ?? "belirtilmedi"}

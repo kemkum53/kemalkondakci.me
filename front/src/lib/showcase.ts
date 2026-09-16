@@ -1,5 +1,5 @@
 // Showcase areas. One page per work area, sendable to a client as a single link.
-// Case studies, pictures and pricing come from the database; the copy below is
+// Case studies and pictures come from the database; the copy below is
 // the part that rarely changes, so it lives in the repo.
 import { CATEGORY_ACCENTS, type WorkCategory } from "@/lib/categories";
 import type { Lang } from "@/lib/translations";
@@ -36,7 +36,7 @@ export const SHOWCASE_AREAS: ShowcaseArea[] = [
         casesEmpty: "Bu alandaki işler yakında burada olacak. O zamana kadar ihtiyacınızı yazarsanız benzer bir örnek gösterebilirim.",
         metaTitle: "Web ve E-ticaret İşleri",
         metaDescription:
-          "Kurumsal siteler, ürün katalogları ve ödeme alan mağazalar. Yapılan işler, ekran görüntüleri ve fiyatlarıyla.",
+          "Kurumsal siteler, ürün katalogları ve ödeme alan mağazalar. Yapılan işler ve ekran görüntüleriyle.",
       },
       en: {
         eyebrow: "Web and e-commerce",
@@ -47,7 +47,7 @@ export const SHOWCASE_AREAS: ShowcaseArea[] = [
         casesEmpty: "Work in this area is coming here soon. In the meantime, tell me what you need and I can show you something similar.",
         metaTitle: "Web and E-commerce Work",
         metaDescription:
-          "Company sites, product catalogues and shops that take payments. Case studies, screenshots and pricing.",
+          "Company sites, product catalogues and shops that take payments. Case studies and screenshots.",
       },
     },
   },
@@ -146,7 +146,7 @@ export const SHOWCASE_COMMON = {
   tr: {
     indexEyebrow: "Yapılan işler",
     indexTitle: "Hangi alanda çalıştığımı görün",
-    indexLead: "Her alanın kendi sayfası var: yapılan işler, ekran görüntüleri ve o alandaki hizmetlerin fiyatları. İlgilendiğiniz alanı seçin.",
+    indexLead: "Her alanın kendi sayfası var: yapılan işler, ekran görüntüleri ve o alanda verdiğim hizmetler. İlgilendiğiniz alanı seçin.",
     caseCount: (n: number) => (n === 1 ? "1 iş" : `${n} iş`),
     caseCountEmpty: "Yakında",
     open: "İncele",
@@ -159,12 +159,12 @@ export const SHOWCASE_COMMON = {
     detail: "Proje detayı",
     live: "Canlı site",
     repo: "Kaynak kodu",
-    servicesTitle: "Bu alandaki hizmetler ve fiyatlar",
-    servicesLink: "Fiyat listesinin tamamı",
+    servicesTitle: "Bu alandaki hizmetler",
+    servicesLink: "Hizmetlerin tamamı",
     ctaTitle: "Benzer bir işe ihtiyacınız varsa",
     ctaText: "Yapmak istediğinizi birkaç cümleyle yazın. Uygulanabilir mi, ne kadar sürer, ne kadar tutar diye bakıp net bir kapsamla dönerim.",
     ctaPrimary: "İhtiyacınızı yazın",
-    ctaSecondary: "Fiyatlara bakın",
+    ctaSecondary: "Hizmetlere bakın",
     close: "Kapat",
     previous: "Önceki görsel",
     next: "Sonraki görsel",
@@ -172,7 +172,7 @@ export const SHOWCASE_COMMON = {
   en: {
     indexEyebrow: "Selected work",
     indexTitle: "See the areas I work in",
-    indexLead: "Each area has its own page: the work, the screenshots and what the services in that area cost. Pick the one you are interested in.",
+    indexLead: "Each area has its own page: the work, the screenshots and the services I offer there. Pick the one you are interested in.",
     caseCount: (n: number) => (n === 1 ? "1 project" : `${n} projects`),
     caseCountEmpty: "Coming soon",
     open: "Open",
@@ -185,12 +185,12 @@ export const SHOWCASE_COMMON = {
     detail: "Project details",
     live: "Live site",
     repo: "Source code",
-    servicesTitle: "Services and pricing in this area",
-    servicesLink: "See the full price list",
+    servicesTitle: "Services in this area",
+    servicesLink: "See all services",
     ctaTitle: "If you need something similar",
     ctaText: "Describe what you want in a few sentences. I will tell you whether it is feasible, how long it takes and what it costs, with a concrete scope.",
     ctaPrimary: "Tell me what you need",
-    ctaSecondary: "See pricing",
+    ctaSecondary: "See services",
     close: "Close",
     previous: "Previous picture",
     next: "Next picture",

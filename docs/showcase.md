@@ -42,3 +42,14 @@ Kategori ataması `0005_project_categories` migration'ında duruyor. Bu olmadan
 dağıtımdan sonra bütün projeler `other` kalır ve vitrin sayfaları boş açılır.
 Yeni proje eklendiğinde kategori admin panelden seçilir, migration'a dokunmak
 gerekmez.
+
+## Fiyatların kaldırılması
+
+Hizmet sayfasında rakam yazmıyor. Fiyat, kapsam konuşulduktan sonra yazılı
+teklifle veriliyor. `price_type`, `setup_price_*`, `monthly_price`, `currency`
+ve `price_note_*` sütunları `0006_drop_service_prices` ile düşürüldü.
+
+Dağıtımdan önce veritabanı yedeği al: migration sütunları düşürür, içindeki
+rakamlar geri gelmez. Downgrade sütunları geri ekler ama boş olarak.
+Kaldırılmadan önceki canlı değerler `fiyat-yedegi.json` dosyasında (repoya
+girmiyor).

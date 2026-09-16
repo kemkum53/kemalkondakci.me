@@ -24,13 +24,6 @@ function makeService(over: Partial<ServiceCard> = {}): ServiceCard {
     shortDescEn: "Site with catalog, cart and checkout.",
     featuresTr: ["Sanal POS entegrasyonu", "Yönetim paneli"],
     featuresEn: ["Payment gateway", "Admin panel"],
-    priceType: "range",
-    setupPriceMin: 45000,
-    setupPriceMax: 90000,
-    monthlyPrice: 2500,
-    currency: "TRY",
-    priceNoteTr: "KDV hariç",
-    priceNoteEn: "VAT excluded",
     deliveryMinDays: 21,
     deliveryMaxDays: 35,
     deliveryNoteTr: "",
@@ -61,12 +54,11 @@ describe("ServicesList", () => {
     expect(screen.getByText(/yayında hizmet yok/i)).toBeInTheDocument();
   });
 
-  it("hizmet adını, fiyatını ve teslim süresini gösterir", () => {
+  it("hizmet adını ve teslim süresini gösterir, rakam göstermez", () => {
     renderList([makeService()]);
     expect(screen.getByText("Satış Altyapılı Web Sitesi")).toBeInTheDocument();
-    expect(screen.getByText(/45\.000 - /)).toBeInTheDocument();
     expect(screen.getByText("21 - 35 gün")).toBeInTheDocument();
-    expect(screen.getByText("KDV hariç")).toBeInTheDocument();
+    expect(screen.queryByText(/₺/)).not.toBeInTheDocument();
   });
 
   it("kapsam maddeleri açılana kadar görünmez", async () => {
@@ -87,18 +79,6 @@ describe("ServicesList", () => {
     );
   });
 
-  it("teklife göre seçilmiş hizmette rakam göstermez", () => {
-    renderList([
-      makeService({
-        priceType: "quote",
-        setupPriceMin: null,
-        setupPriceMax: null,
-        monthlyPrice: null,
-      }),
-    ]);
-    expect(screen.getByText("Teklife göre")).toBeInTheDocument();
-    expect(screen.queryByText(/45\.000/)).not.toBeInTheDocument();
-  });
 
   it("kategori filtresi sadece seçili kategoriyi bırakır", async () => {
     renderList([
@@ -149,9 +129,9 @@ describe("ServicesList", () => {
     expect(screen.getByText("evrenselyapi.com.tr")).toBeInTheDocument();
   });
 
-  it("fiyat uyarısını hero rozetleri arasında, kartlardan önce gösterir", () => {
+  it("fiyat notunu hero rozetleri arasında, kartlardan önce gösterir", () => {
     renderList([makeService()]);
-    const rozet = screen.getByText(/Fiyatlar kapsama göre değişir/);
+    const rozet = screen.getByText(/Fiyat, kapsam netleşince yazılı veriliyor/);
     expect(rozet).toBeInTheDocument();
 
     // Uyarı, DOM sırasında ilk hizmet kartından önce gelmeli.
@@ -159,16 +139,16 @@ describe("ServicesList", () => {
     expect(rozet.compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it("uyarının ayrıntısı sayfa sonundaki dipnotta duruyor", () => {
+  it("notun ayrıntısı sayfa sonundaki dipnotta duruyor", () => {
     renderList([makeService()]);
     expect(
-      screen.getByText(/Kesin rakam, ihtiyacınızı konuştuktan sonra/)
+      screen.getByText(/Teklif, ihtiyacınızı konuştuktan sonra maddelenmiş kapsamla/)
     ).toBeInTheDocument();
   });
 
-  it("hizmet yokken bile fiyat uyarısı hero'da kalır", () => {
+  it("hizmet yokken bile fiyat notu hero'da kalır", () => {
     renderList([]);
-    expect(screen.getByText(/Fiyatlar kapsama göre değişir/)).toBeInTheDocument();
+    expect(screen.getByText(/Fiyat, kapsam netleşince yazılı veriliyor/)).toBeInTheDocument();
   });
 
   it("referansı olmayan hizmette referans bloğu çıkmaz", () => {

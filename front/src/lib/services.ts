@@ -16,13 +16,6 @@ export type ApiService = {
   shortDescEn: string;
   featuresTr: string[];
   featuresEn: string[];
-  priceType: string;
-  setupPriceMin: number | null;
-  setupPriceMax: number | null;
-  monthlyPrice: number | null;
-  currency: string;
-  priceNoteTr: string;
-  priceNoteEn: string;
   deliveryMinDays: number | null;
   deliveryMaxDays: number | null;
   deliveryNoteTr: string;

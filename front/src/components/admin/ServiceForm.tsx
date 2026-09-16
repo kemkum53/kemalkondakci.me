@@ -4,14 +4,8 @@ import { useActionState, useState } from "react";
 import { saveService, type ServiceFormState } from "@/app/admin/services/actions";
 import {
   CATEGORY_LABELS,
-  CURRENCIES,
-  PRICE_TYPES,
-  PRICE_TYPE_LABELS,
   SERVICE_CATEGORIES,
   formatDelivery,
-  formatPrice,
-  quoteLabel,
-  type PriceType,
 } from "@/lib/service-format";
 
 export type ServiceFormData = {
@@ -25,13 +19,6 @@ export type ServiceFormData = {
   shortDescEn?: string;
   featuresTr?: string[];
   featuresEn?: string[];
-  priceType?: string;
-  setupPriceMin?: number | null;
-  setupPriceMax?: number | null;
-  monthlyPrice?: number | null;
-  currency?: string;
-  priceNoteTr?: string;
-  priceNoteEn?: string;
   deliveryMinDays?: number | null;
   deliveryMaxDays?: number | null;
   deliveryNoteTr?: string;
@@ -66,28 +53,11 @@ export default function ServiceForm({ service }: { service?: ServiceFormData }) 
   const [state, formAction, pending] = useActionState(saveService, initialState);
   const [activeLang, setActiveLang] = useState<"tr" | "en">("tr");
 
-  const [priceType, setPriceType] = useState<PriceType>(
-    (service?.priceType as PriceType) ?? "quote"
-  );
-  const [currency, setCurrency] = useState(service?.currency ?? "TRY");
-  const [setupMin, setSetupMin] = useState(toInput(service?.setupPriceMin));
-  const [setupMax, setSetupMax] = useState(toInput(service?.setupPriceMax));
-  const [monthly, setMonthly] = useState(toInput(service?.monthlyPrice));
   const [minDays, setMinDays] = useState(toInput(service?.deliveryMinDays));
   const [maxDays, setMaxDays] = useState(toInput(service?.deliveryMaxDays));
   const [deliveryNoteTr, setDeliveryNoteTr] = useState(service?.deliveryNoteTr ?? "");
 
   // Sayfada nasıl görüneceğinin canlı önizlemesi (Türkçe).
-  const preview = formatPrice(
-    {
-      priceType,
-      setupPriceMin: parseAmount(setupMin),
-      setupPriceMax: priceType === "range" ? parseAmount(setupMax) : null,
-      monthlyPrice: parseAmount(monthly),
-      currency,
-    },
-    "tr"
-  );
   const previewDelivery = formatDelivery(
     {
       deliveryMinDays: parseAmount(minDays),
@@ -97,8 +67,6 @@ export default function ServiceForm({ service }: { service?: ServiceFormData }) 
     },
     "tr"
   );
-
-  const showAmounts = priceType !== "quote";
 
   return (
     <form action={formAction} className="space-y-6 max-w-3xl">
@@ -230,160 +198,6 @@ export default function ServiceForm({ service }: { service?: ServiceFormData }) 
         </div>
       </div>
 
-      {/* --- Fiyat --- */}
-      <fieldset className="border-2 border-[var(--border)] rounded-xl p-4 space-y-4">
-        <legend className="px-2 text-sm font-semibold text-[var(--cyan)]">Fiyat</legend>
-
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <label className={labelClass} htmlFor="priceType">
-              Fiyat tipi
-            </label>
-            <select
-              id="priceType"
-              name="priceType"
-              value={priceType}
-              onChange={(e) => setPriceType(e.target.value as PriceType)}
-              className={inputClass}
-            >
-              {PRICE_TYPES.map((p) => (
-                <option key={p} value={p}>
-                  {PRICE_TYPE_LABELS[p]}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className={showAmounts ? "" : "hidden"}>
-            <label className={labelClass} htmlFor="currency">
-              Para birimi
-            </label>
-            <select
-              id="currency"
-              name="currency"
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-              className={inputClass}
-            >
-              {CURRENCIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className={`grid sm:grid-cols-3 gap-4 ${showAmounts ? "" : "hidden"}`}>
-          <div>
-            <label className={labelClass} htmlFor="setupPriceMin">
-              {priceType === "range" ? "Kurulum (alt)" : "Kurulum bedeli"}
-            </label>
-            <input
-              id="setupPriceMin"
-              name="setupPriceMin"
-              type="number"
-              min={0}
-              step={100}
-              value={setupMin}
-              onChange={(e) => setSetupMin(e.target.value)}
-              className={inputClass}
-            />
-          </div>
-          <div className={priceType === "range" ? "" : "invisible"}>
-            <label className={labelClass} htmlFor="setupPriceMax">
-              Kurulum (üst)
-            </label>
-            <input
-              id="setupPriceMax"
-              name="setupPriceMax"
-              type="number"
-              min={0}
-              step={100}
-              value={setupMax}
-              onChange={(e) => setSetupMax(e.target.value)}
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label className={labelClass} htmlFor="monthlyPrice">
-              Aylık abonelik
-            </label>
-            <input
-              id="monthlyPrice"
-              name="monthlyPrice"
-              type="number"
-              min={0}
-              step={100}
-              value={monthly}
-              onChange={(e) => setMonthly(e.target.value)}
-              className={inputClass}
-            />
-            <p className={hintClass}>Boş veya 0 ise gösterilmez.</p>
-          </div>
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <label className={labelClass} htmlFor="priceNoteTr">
-              Fiyat notu (TR)
-            </label>
-            <input
-              id="priceNoteTr"
-              name="priceNoteTr"
-              defaultValue={service?.priceNoteTr}
-              placeholder="KDV hariç"
-              maxLength={255}
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label className={labelClass} htmlFor="priceNoteEn">
-              Price note (EN)
-            </label>
-            <input
-              id="priceNoteEn"
-              name="priceNoteEn"
-              defaultValue={service?.priceNoteEn}
-              placeholder="VAT excluded"
-              maxLength={255}
-              className={inputClass}
-            />
-          </div>
-        </div>
-
-        {/* Canlı önizleme */}
-        <div className="rounded-lg bg-[var(--bg)] border-2 border-[var(--border)] px-4 py-3">
-          <div className="text-xs uppercase tracking-wider text-[var(--muted)] mb-1">
-            Sayfada böyle görünecek
-          </div>
-          {preview.isQuote ? (
-            <div className="font-display text-xl text-[var(--cyan)]">{quoteLabel("tr")}</div>
-          ) : (
-            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-              {preview.setupValue && (
-                <div className="font-display text-xl text-[var(--text)]">
-                  <span className="text-xs uppercase tracking-wider text-[var(--muted)] mr-2">
-                    {preview.setupLabel}
-                  </span>
-                  {preview.setupValue}
-                </div>
-              )}
-              {preview.monthlyValue && (
-                <div className="font-display text-lg text-[var(--cyan)]">
-                  <span className="text-xs uppercase tracking-wider text-[var(--muted)] mr-2">
-                    {preview.monthlyLabel}
-                  </span>
-                  {preview.monthlyValue}
-                </div>
-              )}
-            </div>
-          )}
-          <div className="text-sm text-[var(--muted)] mt-1">
-            {previewDelivery ? `Teslim: ${previewDelivery}` : "Teslim süresi girilmedi"}
-          </div>
-        </div>
-      </fieldset>
-
       {/* --- Teslim süresi --- */}
       <fieldset className="border-2 border-[var(--border)] rounded-xl p-4 space-y-4">
         <legend className="px-2 text-sm font-semibold text-[var(--cyan)]">Teslim süresi</legend>
@@ -415,6 +229,14 @@ export default function ServiceForm({ service }: { service?: ServiceFormData }) 
               onChange={(e) => setMaxDays(e.target.value)}
               className={inputClass}
             />
+          </div>
+          <div className="sm:col-span-2 rounded-lg bg-[var(--bg)] border-2 border-[var(--border)] px-4 py-3">
+            <div className="text-xs uppercase tracking-wider text-[var(--muted)] mb-1">
+              Sayfada böyle görünecek
+            </div>
+            <div className="text-sm text-[var(--text)]">
+              {previewDelivery ? `Teslim: ${previewDelivery}` : "Teslim süresi girilmedi"}
+            </div>
           </div>
           <div>
             <label className={labelClass} htmlFor="deliveryNoteTr">

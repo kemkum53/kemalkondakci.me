@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useLanguage } from "@/lib/language-context";
 import type { GalleryImage } from "@/lib/projects";
-import { formatPrice, quoteLabel } from "@/lib/service-format";
 import { getShowcaseArea, SHOWCASE_COMMON } from "@/lib/showcase";
 import CaseGallery from "@/components/showcase/CaseGallery";
 import styles from "@/app/showcase/showcase.module.css";
@@ -31,11 +30,6 @@ export type ServiceSummary = {
   nameEn: string;
   shortDescTr: string;
   shortDescEn: string;
-  priceType: string;
-  setupPriceMin: number | null;
-  setupPriceMax: number | null;
-  monthlyPrice: number | null;
-  currency: string;
 };
 
 type Props = {
@@ -218,39 +212,16 @@ export default function ShowcaseAreaView({ area, cases, services }: Props) {
             </div>
             <div className={styles.inner}>
               <div className={styles.serviceGrid}>
-                {services.map((s) => {
-                  const price = formatPrice(s, lang);
-                  return (
-                    <article key={s.id} className={styles.serviceCard}>
-                      <h3 className={styles.serviceName}>
-                        {lang === "tr" ? s.nameTr : s.nameEn}
-                      </h3>
-                      <p className={styles.serviceDesc}>
-                        {lang === "tr" ? s.shortDescTr : s.shortDescEn}
-                      </p>
-                      <div className={styles.priceRow}>
-                        {price.isQuote ? (
-                          <span className={styles.priceValue}>{quoteLabel(lang)}</span>
-                        ) : (
-                          <>
-                            {price.setupValue && (
-                              <>
-                                <span className={styles.priceLabel}>{price.setupLabel}</span>
-                                <span className={styles.priceValue}>{price.setupValue}</span>
-                              </>
-                            )}
-                            {price.monthlyValue && (
-                              <>
-                                <span className={styles.priceLabel}>{price.monthlyLabel}</span>
-                                <span className={styles.priceValue}>{price.monthlyValue}</span>
-                              </>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </article>
-                  );
-                })}
+                {services.map((s) => (
+                  <article key={s.id} className={styles.serviceCard}>
+                    <h3 className={styles.serviceName}>
+                      {lang === "tr" ? s.nameTr : s.nameEn}
+                    </h3>
+                    <p className={styles.serviceDesc}>
+                      {lang === "tr" ? s.shortDescTr : s.shortDescEn}
+                    </p>
+                  </article>
+                ))}
               </div>
               <Link href="/services" className={styles.servicesLink}>
                 {common.servicesLink} →

@@ -204,8 +204,6 @@ class ProjectOut(CamelModel):
 
 
 # --- Services ---
-PRICE_TYPES = {"range", "from", "fixed", "quote"}
-CURRENCIES = {"TRY", "USD", "EUR"}
 
 
 class ServiceReference(CamelModel):
@@ -240,14 +238,6 @@ class ServiceIn(CamelModel):
     features_tr: list[str] = []
     features_en: list[str] = []
 
-    price_type: str = "quote"
-    setup_price_min: int | None = None
-    setup_price_max: int | None = None
-    monthly_price: int | None = None
-    currency: str = "TRY"
-    price_note_tr: str = ""
-    price_note_en: str = ""
-
     delivery_min_days: int | None = None
     delivery_max_days: int | None = None
     delivery_note_tr: str = ""
@@ -266,24 +256,7 @@ class ServiceIn(CamelModel):
     def _category(cls, v: str) -> str:
         return normalize_category(v)
 
-    @field_validator("price_type")
-    @classmethod
-    def _price_type(cls, v: str) -> str:
-        if v not in PRICE_TYPES:
-            raise ValueError("Geçersiz fiyat tipi.")
-        return v
-
-    @field_validator("currency")
-    @classmethod
-    def _currency(cls, v: str) -> str:
-        if v not in CURRENCIES:
-            raise ValueError("Geçersiz para birimi.")
-        return v
-
-    @field_validator(
-        "setup_price_min", "setup_price_max", "monthly_price",
-        "delivery_min_days", "delivery_max_days",
-    )
+    @field_validator("delivery_min_days", "delivery_max_days")
     @classmethod
     def _non_negative(cls, v: int | None) -> int | None:
         if v is not None and v < 0:
@@ -292,12 +265,6 @@ class ServiceIn(CamelModel):
 
     @model_validator(mode="after")
     def _ranges(self) -> "ServiceIn":
-        if (
-            self.setup_price_min is not None
-            and self.setup_price_max is not None
-            and self.setup_price_max < self.setup_price_min
-        ):
-            raise ValueError("Üst fiyat alt fiyattan küçük olamaz.")
         if (
             self.delivery_min_days is not None
             and self.delivery_max_days is not None
@@ -319,13 +286,6 @@ class ServiceOut(CamelModel):
     short_desc_en: str
     features_tr: list[str]
     features_en: list[str]
-    price_type: str
-    setup_price_min: int | None
-    setup_price_max: int | None
-    monthly_price: int | None
-    currency: str
-    price_note_tr: str
-    price_note_en: str
     delivery_min_days: int | None
     delivery_max_days: int | None
     delivery_note_tr: str

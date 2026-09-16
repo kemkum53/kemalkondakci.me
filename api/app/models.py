@@ -80,7 +80,7 @@ class Project(Base):
 
 
 class Service(Base):
-    """Çift dilli hizmet kalemi: kapsam, fiyat ve teslim süresi. /services sayfası için."""
+    """Çift dilli hizmet kalemi: kapsam ve teslim süresi. Fiyat teklifle verilir."""
 
     __tablename__ = "services"
 
@@ -99,16 +99,6 @@ class Service(Base):
     # Kapsam maddeleri ("Ödeme entegrasyonu", "Yönetim paneli", ...)
     features_tr: Mapped[list] = mapped_column(JSON, default=list)
     features_en: Mapped[list] = mapped_column(JSON, default=list)
-
-    # Fiyat: price_type kurulum bedelinin nasıl gösterileceğini belirler,
-    # monthly_price ondan bağımsız olarak "aylık" satırı olarak görünür.
-    price_type: Mapped[str] = mapped_column(String(16), default="quote")
-    setup_price_min: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    setup_price_max: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    monthly_price: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    currency: Mapped[str] = mapped_column(String(8), default="TRY")
-    price_note_tr: Mapped[str] = mapped_column(String(255), default="")
-    price_note_en: Mapped[str] = mapped_column(String(255), default="")
 
     # Teslim süresi (gün). Serbest metin notu istisnalar için.
     delivery_min_days: Mapped[int | None] = mapped_column(Integer, nullable=True)

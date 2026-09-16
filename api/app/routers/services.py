@@ -78,20 +78,6 @@ def _apply(service: Service, data: ServiceIn) -> None:
     service.features_tr = _clean_list(data.features_tr)
     service.features_en = _clean_list(data.features_en)
 
-    service.price_type = data.price_type
-    # "Teklife göre" seçildiyse rakamlar sızmasın; sayfada da gösterilmeyecek.
-    if data.price_type == "quote":
-        service.setup_price_min = None
-        service.setup_price_max = None
-        service.monthly_price = None
-    else:
-        service.setup_price_min = data.setup_price_min
-        service.setup_price_max = data.setup_price_max if data.price_type == "range" else None
-        service.monthly_price = data.monthly_price
-    service.currency = data.currency
-    service.price_note_tr = data.price_note_tr.strip()
-    service.price_note_en = data.price_note_en.strip()
-
     service.delivery_min_days = data.delivery_min_days
     service.delivery_max_days = data.delivery_max_days
     service.delivery_note_tr = data.delivery_note_tr.strip()

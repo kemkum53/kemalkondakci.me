@@ -330,7 +330,7 @@
   font-size: 0.95rem;
 }
 
-/* Fiyat levhası: kartın içinde ayrı malzeme. */
+/* Teslim levhası: kartın içinde ayrı malzeme. */
 .priceSlab {
   margin: 1.1rem 1.25rem 0 1.5rem;
   padding: 0.95rem 1.1rem;
@@ -338,47 +338,7 @@
   border-radius: 10px;
   background: linear-gradient(180deg, rgba(10, 10, 15, 0.85), rgba(10, 10, 15, 0.55));
 }
-.priceRow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.4rem 1.4rem;
-}
-.priceLabel {
-  display: block;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.15rem;
-}
-.priceValue {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(1.35rem, 2.4vw, 1.7rem);
-  line-height: 1.1;
-  color: var(--text);
-}
-.priceMonthly .priceValue {
-  color: var(--cyan);
-  font-size: clamp(1.1rem, 2vw, 1.3rem);
-}
-.priceQuote {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.3rem;
-  color: var(--cyan);
-}
-.priceNote {
-  margin-top: 0.5rem;
-  font-size: 0.78rem;
-  color: var(--muted);
-}
 .delivery {
-  margin-top: 0.7rem;
-  padding-top: 0.7rem;
-  border-top: 2px solid var(--border);
   display: flex;
   align-items: baseline;
   gap: 0.5rem;

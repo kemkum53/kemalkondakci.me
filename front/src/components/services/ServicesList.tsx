@@ -7,8 +7,6 @@ import { categoryAccent as accentOf, categoryLabel } from "@/lib/categories";
 import {
   SERVICE_CATEGORIES,
   formatDelivery,
-  formatPrice,
-  quoteLabel,
 } from "@/lib/service-format";
 import styles from "@/app/services/services.module.css";
 
@@ -23,13 +21,6 @@ export type ServiceCard = {
   shortDescEn: string;
   featuresTr: string[];
   featuresEn: string[];
-  priceType: string;
-  setupPriceMin: number | null;
-  setupPriceMax: number | null;
-  monthlyPrice: number | null;
-  currency: string;
-  priceNoteTr: string;
-  priceNoteEn: string;
   deliveryMinDays: number | null;
   deliveryMaxDays: number | null;
   deliveryNoteTr: string;
@@ -41,15 +32,15 @@ export type ServiceCard = {
 
 const COPY = {
   tr: {
-    eyebrow: "Hizmetler ve fiyatlar",
-    title: "Ne yapıyorum, ne kadar sürüyor, ne kadar tutuyor",
-    lead: "Aşağıdaki kalemler tipik kapsamlar için hazırlandı. Kurulum bedeli tek seferlik; aylık bedel varsa barındırma ve bakımı kapsar. Kapsam değişirse fiyatı birlikte netleştiririz.",
+    eyebrow: "Hizmetler",
+    title: "Ne yapıyorum ve ne kadar sürüyor",
+    lead: "Aşağıdaki kalemler tipik kapsamlar için hazırlandı. Rakam yazmıyorum, çünkü aynı işin fiyatı sayfa sayısına, entegrasyonlara ve elinizdeki içeriğe göre ciddi değişiyor. İhtiyacınızı konuşalım, kapsamı çıkarıp yazılı teklif vereyim.",
     pillResponse: "Genellikle 24 saat içinde yanıt",
     pillRemote: "Uzaktan çalışma, Türkiye geneli",
     all: "Tümü",
     empty: "Şu anda yayında hizmet yok. İhtiyacınızı yazarsanız kapsamı birlikte çıkarabiliriz.",
     noneInCategory: "Bu kategoride yayında hizmet yok.",
-    pillPrices: "Fiyatlar kapsama göre değişir",
+    pillPrices: "Fiyat, kapsam netleşince yazılı veriliyor",
     scope: "Neler dahil",
     hideScope: "Kapsamı gizle",
     delivery: "Teslim",
@@ -61,18 +52,18 @@ const COPY = {
     ctaText: "Yapmak istediğiniz işi birkaç cümleyle yazın; uygulanabilir mi, ne kadar tutar diye bakıp net bir kapsamla döneyim.",
     ctaPrimary: "İhtiyacınızı yazın",
     ctaSecondary: "Projelerimi inceleyin",
-    footnote: "Buradaki rakamlar tipik bir kapsam içindir ve başlangıç noktasıdır; işin büyüklüğü, sayfa ve ürün sayısı, istediğiniz entegrasyonlar ve içeriğin hazır olup olmaması fiyatı aşağı da yukarı da çeker. Kesin rakam, ihtiyacınızı konuştuktan sonra çıkardığımız kapsamla netleşir ve size yazılı olarak verilir. Bütün fiyatlar KDV hariçtir. Aylık bedeli olan hizmetlerde sunucu, güncelleme ve destek dahildir; üçüncü taraf lisans ve kullanım ücretleri (ödeme altyapısı, yapay zekâ modeli kullanımı, alan adı) ayrıca hesaplanır.",
+    footnote: "Buradaki teslim süreleri tipik bir kapsam içindir; sayfa ve ürün sayısı, istediğiniz entegrasyonlar ve içeriğin hazır olup olmaması süreyi de değiştirir. Teklif, ihtiyacınızı konuştuktan sonra maddelenmiş kapsamla birlikte yazılı verilir ve KDV hariçtir. Aylık bedeli olan hizmetlerde sunucu, güncelleme ve destek dahildir; üçüncü taraf lisans ve kullanım ücretleri (ödeme altyapısı, yapay zekâ modeli kullanımı, alan adı) ayrıca hesaplanır.",
   },
   en: {
-    eyebrow: "Services and pricing",
-    title: "What I build, how long it takes, what it costs",
-    lead: "The items below cover typical scopes. Setup is a one-off fee; where a monthly fee applies it covers hosting and maintenance. If the scope changes, we work out the price together.",
+    eyebrow: "Services",
+    title: "What I build and how long it takes",
+    lead: "The items below cover typical scopes. I do not print figures, because the same job varies a lot with the number of pages, the integrations and the content you already have. Tell me what you need and I will scope it and send a written quote.",
     pillResponse: "Usually responds within 24 hours",
     pillRemote: "Remote, working across Turkey",
     all: "All",
     empty: "No published services right now. Describe what you need and we can scope it together.",
     noneInCategory: "No published services in this category.",
-    pillPrices: "Prices vary with scope",
+    pillPrices: "The price comes in writing once the scope is set",
     scope: "What is included",
     hideScope: "Hide details",
     delivery: "Delivery",
@@ -84,7 +75,7 @@ const COPY = {
     ctaText: "Describe the job in a few sentences. I will tell you whether it is feasible, what it would cost, and come back with a concrete scope.",
     ctaPrimary: "Tell me what you need",
     ctaSecondary: "See my projects",
-    footnote: "The figures here cover a typical scope and are a starting point; the size of the job, the number of pages and products, the integrations you need and whether your content is ready can move the price either way. The final figure is set once we have talked through your needs, and you get it in writing. All prices exclude VAT. Monthly fees include hosting, updates and support; third-party licence and usage costs (payment provider, AI model usage, domain) are billed separately.",
+    footnote: "The delivery times here cover a typical scope; the number of pages and products, the integrations you need and whether your content is ready all move them. The quote comes in writing with an itemised scope once we have talked through your needs, and it excludes VAT. Monthly fees include hosting, updates and support; third-party licence and usage costs (payment provider, AI model usage, domain) are billed separately.",
   },
 } as const;
 
@@ -195,8 +186,6 @@ export default function ServicesList({ services }: { services: ServiceCard[] }) 
                           const name = (lang === "tr" ? s.nameTr : s.nameEn) || s.nameTr;
                           const desc = lang === "tr" ? s.shortDescTr : s.shortDescEn;
                           const features = lang === "tr" ? s.featuresTr : s.featuresEn;
-                          const priceNote = lang === "tr" ? s.priceNoteTr : s.priceNoteEn;
-                          const price = formatPrice(s, lang);
                           const delivery = formatDelivery(s, lang);
                           const isOpen = Boolean(expanded[s.id]);
                           const listId = `features-${s.id}`;
@@ -223,35 +212,6 @@ export default function ServicesList({ services }: { services: ServiceCard[] }) 
                               {desc && <p className={styles.cardDesc}>{desc}</p>}
 
                               <div className={styles.priceSlab}>
-                                {price.isQuote ? (
-                                  <div className={styles.priceQuote}>{quoteLabel(lang)}</div>
-                                ) : (
-                                  <div className={styles.priceRow}>
-                                    {price.setupValue && (
-                                      <div>
-                                        <span className={styles.priceLabel}>
-                                          {price.setupLabel}
-                                        </span>
-                                        <span className={styles.priceValue}>
-                                          {price.setupValue}
-                                        </span>
-                                      </div>
-                                    )}
-                                    {price.monthlyValue && (
-                                      <div className={styles.priceMonthly}>
-                                        <span className={styles.priceLabel}>
-                                          {price.monthlyLabel}
-                                        </span>
-                                        <span className={styles.priceValue}>
-                                          {price.monthlyValue}
-                                        </span>
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-
-                                {priceNote && <p className={styles.priceNote}>{priceNote}</p>}
-
                                 {delivery && (
                                   <div className={styles.delivery}>
                                     <span className={styles.deliveryLabel}>{copy.delivery}</span>
