@@ -31,3 +31,14 @@ Müşteriye doğrudan gönderilebilen, çalışma alanına göre ayrışan vitri
 - [x] 9. Navbar, sitemap, çeviriler
 - [x] 10. Front testleri
 - [x] 11. `tools/screenshots` ekran görüntüsü aracı
+
+## Canlıdan içerik aktarımı
+
+Hizmetler ve projeler canlı siteden çekildi (`https://kemalkondakci.me/api/services`
+ve `/api/projects`, yalnızca okuma). Kapak görselleri indirilip yerel yükleme
+dizinine yeniden yüklendi.
+
+Kategori ataması `0005_project_categories` migration'ında duruyor. Bu olmadan
+dağıtımdan sonra bütün projeler `other` kalır ve vitrin sayfaları boş açılır.
+Yeni proje eklendiğinde kategori admin panelden seçilir, migration'a dokunmak
+gerekmez.
