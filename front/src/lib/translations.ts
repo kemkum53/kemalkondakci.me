@@ -37,6 +37,7 @@ export const translations = {
     navbar: {
       home: "Home",
       cv: "CV",
+      showcase: "Work",
       projects: "Projects",
       services: "Services",
       blog: "Blog",
@@ -136,6 +137,7 @@ export const translations = {
     navbar: {
       home: "Ana Sayfa",
       cv: "CV",
+      showcase: "İşler",
       projects: "Projeler",
       services: "Hizmetler",
       blog: "Blog",

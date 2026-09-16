@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useLanguage } from "@/lib/language-context";
+import { categoryAccent as accentOf, categoryLabel } from "@/lib/categories";
 import {
-  CATEGORY_LABELS,
   SERVICE_CATEGORIES,
   formatDelivery,
   formatPrice,
   quoteLabel,
-  type ServiceCategory,
 } from "@/lib/service-format";
 import styles from "@/app/services/services.module.css";
 
@@ -39,26 +38,6 @@ export type ServiceCard = {
   tags: string[];
   featured: boolean;
 };
-
-/** Kategori vurgu rengi. CSS içinde color-mix ile türetilir. */
-const ACCENTS: Record<ServiceCategory, string> = {
-  web: "#7A3CFF",
-  chatbot: "#00E5FF",
-  automation: "#FF00A8",
-  devops: "#FF2D55",
-  other: "#93A2B1",
-};
-
-function accentOf(category: string): string {
-  return ACCENTS[category as ServiceCategory] ?? ACCENTS.other;
-}
-
-function categoryLabel(category: string, lang: "tr" | "en"): string {
-  const key = (SERVICE_CATEGORIES as readonly string[]).includes(category)
-    ? (category as ServiceCategory)
-    : "other";
-  return CATEGORY_LABELS[lang][key];
-}
 
 const COPY = {
   tr: {

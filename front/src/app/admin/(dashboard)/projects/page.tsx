@@ -13,6 +13,7 @@ export default async function AdminProjects() {
     id: p.id,
     slug: p.slug,
     name: p.name,
+    category: p.category,
     status: p.status,
     featured: p.featured,
     updatedAt: p.updatedAt,

@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { getPublishedPosts } from '@/lib/posts'
 import { getPublishedProjects } from '@/lib/projects'
+import { SHOWCASE_AREAS } from '@/lib/showcase'
 
 // Build sırasında DB'ye gitmesin; istek anında üretilsin.
 export const dynamic = 'force-dynamic'
@@ -25,6 +26,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
+  const showcaseEntries: MetadataRoute.Sitemap = SHOWCASE_AREAS.map((area) => ({
+    url: `${baseUrl}/showcase/${area.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  }))
+
   return [
     {
       url: baseUrl,
@@ -38,6 +46,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.9,
     },
+    {
+      url: `${baseUrl}/showcase`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    ...showcaseEntries,
     {
       url: `${baseUrl}/projects`,
       lastModified: new Date(),

@@ -106,14 +106,14 @@ describe("ServicesList", () => {
       makeService({
         id: "s2",
         slug: "sql-chatbot",
-        category: "chatbot",
+        category: "ai",
         nameTr: "Veritabanına Bağlı Chatbot",
         featuresTr: [],
       }),
     ]);
     expect(screen.getByText("Veritabanına Bağlı Chatbot")).toBeInTheDocument();
 
-    fireEvent.click(await screen.findByRole("button", { name: "Chatbot & Yapay Zekâ" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Yapay Zekâ ve Chatbot" }));
     expect(screen.getByText("Veritabanına Bağlı Chatbot")).toBeInTheDocument();
     expect(screen.queryByText("Satış Altyapılı Web Sitesi")).not.toBeInTheDocument();
   });

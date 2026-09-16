@@ -4,6 +4,9 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from pydantic.alias_generators import to_camel
 
+from .categories import DEFAULT_CATEGORY
+from .categories import normalize as normalize_category
+
 
 class CamelModel(BaseModel):
     """API'de camelCase anahtarlar (frontend ile uyum); içeride snake_case okunabilir."""
@@ -122,20 +125,55 @@ class UploadOut(CamelModel):
 
 
 # --- Projects ---
+class GalleryImage(CamelModel):
+    """One picture in a case study gallery. Caption is optional, per language."""
+
+    url: str
+    caption_tr: str = ""
+    caption_en: str = ""
+
+    @field_validator("url")
+    @classmethod
+    def _url(cls, v: str) -> str:
+        v = v.strip()
+        if not v.startswith(("/", "http://", "https://")):
+            raise ValueError("Görsel adresi / veya http(s):// ile başlamalı.")
+        if len(v) > 1024:
+            raise ValueError("Görsel adresi çok uzun.")
+        return v
+
+    @field_validator("caption_tr", "caption_en")
+    @classmethod
+    def _caption(cls, v: str) -> str:
+        return v.strip()[:200]
+
+
 class ProjectIn(CamelModel):
     name: str = ""
     slug: str | None = None
     status: str = "draft"
+    category: str = DEFAULT_CATEGORY
     cover_image: str | None = None
     short_desc_tr: str = ""
     short_desc_en: str = ""
     content_tr: str = ""
     content_en: str = ""
+    client_name: str = ""
+    role_tr: str = ""
+    role_en: str = ""
+    results_tr: list[str] = []
+    results_en: list[str] = []
+    gallery: list[GalleryImage] = []
     tech_stack: list[str] = []
     repo_url: str | None = None
     live_url: str | None = None
     featured: bool = False
     position: int = 0
+
+    @field_validator("category")
+    @classmethod
+    def _category(cls, v: str) -> str:
+        return normalize_category(v)
 
 
 class ProjectOut(CamelModel):
@@ -143,11 +181,18 @@ class ProjectOut(CamelModel):
     slug: str
     status: str
     name: str
+    category: str
     cover_image: str | None
     short_desc_tr: str
     short_desc_en: str
     content_tr: str
     content_en: str
+    client_name: str
+    role_tr: str
+    role_en: str
+    results_tr: list[str]
+    results_en: list[str]
+    gallery: list[GalleryImage]
     tech_stack: list[str]
     repo_url: str | None
     live_url: str | None
@@ -160,7 +205,6 @@ class ProjectOut(CamelModel):
 
 # --- Services ---
 PRICE_TYPES = {"range", "from", "fixed", "quote"}
-SERVICE_CATEGORIES = {"web", "chatbot", "automation", "devops", "other"}
 CURRENCIES = {"TRY", "USD", "EUR"}
 
 
@@ -220,7 +264,7 @@ class ServiceIn(CamelModel):
     @field_validator("category")
     @classmethod
     def _category(cls, v: str) -> str:
-        return v if v in SERVICE_CATEGORIES else "other"
+        return normalize_category(v)
 
     @field_validator("price_type")
     @classmethod

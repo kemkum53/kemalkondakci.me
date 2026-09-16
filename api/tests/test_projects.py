@@ -81,3 +81,74 @@ def test_update_and_toggle_and_delete(client, auth_headers):
 
     assert client.delete(f"/api/admin/projects/{p['id']}", headers=auth_headers).status_code == 204
     assert client.get(f"/api/admin/projects/{p['id']}", headers=auth_headers).status_code == 404
+
+
+# --- Showcase alanları -----------------------------------------------------
+
+def test_category_defaults_to_other(client, auth_headers):
+    assert _create(client, auth_headers).json()["category"] == "other"
+
+
+def test_unknown_category_falls_back_to_other(client, auth_headers):
+    assert _create(client, auth_headers, category="uzay").json()["category"] == "other"
+
+
+def test_public_list_filters_by_category(client, auth_headers):
+    _create(client, auth_headers, status="published", name="Web İşi", category="web")
+    _create(client, auth_headers, status="published", name="YZ İşi", category="ai")
+
+    web = client.get("/api/projects", params={"category": "web"}).json()
+    assert [p["name"] for p in web] == ["Web İşi"]
+
+    assert client.get("/api/projects", params={"category": "uzay"}).json() == []
+    assert len(client.get("/api/projects").json()) == 2
+
+
+def test_category_counts_only_published(client, auth_headers):
+    _create(client, auth_headers, status="published", name="Web 1", category="web")
+    _create(client, auth_headers, status="published", name="Web 2", category="web")
+    _create(client, auth_headers, status="draft", name="Taslak", category="devops")
+
+    counts = client.get("/api/project-categories").json()
+    assert counts["web"] == 2
+    assert counts["devops"] == 0
+    assert counts["ai"] == 0
+
+
+def test_gallery_and_results_are_saved(client, auth_headers):
+    data = _create(
+        client,
+        auth_headers,
+        clientName="Korede",
+        roleTr="Tasarım, geliştirme, sunucu",
+        roleEn="Design, development, hosting",
+        resultsTr=["Sayfa açılışı 4.1 sn -> 0.9 sn", "  ", "Sipariş sayısı 3 kat"],
+        gallery=[
+            {"url": "/api/media/a.webp", "captionTr": "Ana sayfa", "captionEn": "Home"},
+            {"url": "https://cdn.example.com/b.png"},
+        ],
+    ).json()
+
+    assert data["clientName"] == "Korede"
+    assert data["roleTr"] == "Tasarım, geliştirme, sunucu"
+    # Boş satırlar atılır.
+    assert data["resultsTr"] == ["Sayfa açılışı 4.1 sn -> 0.9 sn", "Sipariş sayısı 3 kat"]
+    assert data["gallery"][0]["captionTr"] == "Ana sayfa"
+    assert data["gallery"][1]["url"] == "https://cdn.example.com/b.png"
+    assert data["gallery"][1]["captionEn"] == ""
+
+
+def test_gallery_rejects_relative_url(client, auth_headers):
+    res = _create(client, auth_headers, gallery=[{"url": "javascript:alert(1)"}])
+    assert res.status_code == 422
+
+
+def test_gallery_and_results_are_capped(client, auth_headers):
+    data = _create(
+        client,
+        auth_headers,
+        gallery=[{"url": f"/api/media/{i}.webp"} for i in range(20)],
+        resultsEn=[f"result {i}" for i in range(20)],
+    ).json()
+    assert len(data["gallery"]) == 12
+    assert len(data["resultsEn"]) == 8

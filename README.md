@@ -13,6 +13,9 @@ fully Dockerized application I designed, built and run in production.
 
 - **Bilingual content engine** — blog posts and projects (TR/EN) managed from a
   custom admin panel with a rich-text editor; publish without deploying code.
+- **Per-area showcase pages.** `/showcase/<area>` (web, AI, automation, DevOps)
+  turns published projects into client-facing case studies: role, outcome
+  bullets, an image gallery and the priced services for that area, on one link.
 - **BFF security** — the JWT lives in an httpOnly, encrypted cookie; the browser
   never talks to the backend directly. Server-side HTML sanitization (nh3).
 - **Interactive CV** — experience timeline, skills, DB-driven selected projects,
@@ -95,7 +98,7 @@ in persistent volumes.
 ## Testing
 
 ```bash
-cd api && .venv/bin/python -m pytest    # 45 tests: auth, rate-limit, CRUD, sanitize, contact, uploads
+cd api && .venv/bin/python -m pytest    # 77 tests: auth, rate-limit, CRUD, sanitize, contact, uploads
 cd front && npm test                    # Vitest + Testing Library (component tests)
 ```
 
@@ -121,6 +124,12 @@ unless tests pass.
 ## API documentation
 
 Auto-generated OpenAPI / Swagger at `/api/docs` (and `/api/redoc`).
+
+## Tooling
+
+`tools/screenshots` takes desktop and mobile screenshots of a live URL with
+Puppeteer (in a container, nothing added to the app's dependencies) and can
+upload them straight into a project gallery. See its README.
 
 ## License
 

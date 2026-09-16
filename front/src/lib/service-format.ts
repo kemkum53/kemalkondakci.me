@@ -1,31 +1,17 @@
 // Hizmet fiyatı ve teslim süresinin gösterim biçimi.
 // Sunucu tarafına bağlı değil: hem public sayfa hem admin önizlemesi kullanır.
 import type { Lang } from "@/lib/translations";
+import { WORK_CATEGORIES, type WorkCategory } from "@/lib/categories";
 
-export const SERVICE_CATEGORIES = ["web", "chatbot", "automation", "devops", "other"] as const;
-export type ServiceCategory = (typeof SERVICE_CATEGORIES)[number];
+// Services and showcase cases share one taxonomy; see lib/categories.ts.
+export const SERVICE_CATEGORIES = WORK_CATEGORIES;
+export type ServiceCategory = WorkCategory;
+export { CATEGORY_LABELS, categoryAccent, categoryLabel } from "@/lib/categories";
 
 export const PRICE_TYPES = ["range", "from", "fixed", "quote"] as const;
 export type PriceType = (typeof PRICE_TYPES)[number];
 
 export const CURRENCIES = ["TRY", "USD", "EUR"] as const;
-
-export const CATEGORY_LABELS: Record<Lang, Record<ServiceCategory, string>> = {
-  tr: {
-    web: "Web & E-ticaret",
-    chatbot: "Chatbot & Yapay Zekâ",
-    automation: "Otomasyon & Entegrasyon",
-    devops: "DevOps & Altyapı",
-    other: "Diğer",
-  },
-  en: {
-    web: "Web & E-commerce",
-    chatbot: "Chatbot & AI",
-    automation: "Automation & Integration",
-    devops: "DevOps & Infrastructure",
-    other: "Other",
-  },
-};
 
 export const PRICE_TYPE_LABELS: Record<PriceType, string> = {
   fixed: "Sabit fiyat",

@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import ProjectRowActions from "./ProjectRowActions";
+import { categoryLabel } from "@/lib/categories";
 
 export type AdminProject = {
   id: string;
   slug: string;
   name: string;
+  category: string;
   status: string;
   featured: boolean;
   updatedAt: string;
@@ -46,6 +48,7 @@ export default function ProjectsTable({ projects }: { projects: AdminProject[] }
             <thead className="bg-[var(--surface)] text-sm text-[var(--muted)]">
               <tr>
                 <th className="px-4 py-3 font-medium">Proje</th>
+                <th className="px-4 py-3 font-medium hidden md:table-cell">Alan</th>
                 <th className="px-4 py-3 font-medium">Durum</th>
                 <th className="px-4 py-3 font-medium hidden sm:table-cell">Öne çıkan</th>
                 <th className="px-4 py-3 font-medium text-right">İşlem</th>
@@ -62,6 +65,9 @@ export default function ProjectsTable({ projects }: { projects: AdminProject[] }
                       {p.name || "(adsız)"}
                     </Link>
                     <div className="text-xs text-[var(--muted)] mt-0.5">/{p.slug}</div>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-[var(--muted)] hidden md:table-cell">
+                    {categoryLabel(p.category, "tr")}
                   </td>
                   <td className="px-4 py-3">
                     <span

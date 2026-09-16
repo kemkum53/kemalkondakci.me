@@ -27,6 +27,7 @@ export default function KatanaNavbar({
   const defaultLinks = links || [
     { href: "/", label: t.navbar.home },
     { href: "/cv", label: t.navbar.cv },
+    { href: "/showcase", label: t.navbar.showcase },
     { href: "/projects", label: t.navbar.projects },
     { href: "/services", label: t.navbar.services },
     { href: "/blog", label: t.navbar.blog },

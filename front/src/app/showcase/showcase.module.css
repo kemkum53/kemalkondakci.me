@@ -1,0 +1,647 @@
+/* === Vitrin sayfaları ===================================================== */
+/* Hizmetler sayfasıyla aynı görsel dil: gradient zemin, doygun hero bandı,   */
+/* kartlarda alan rengiyle (--accent) türetilen vurgular.                     */
+
+.page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--navy) 0%, var(--bg) 45%, var(--navy) 100%);
+  color: var(--text);
+  font-weight: 460;
+}
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 45% at 50% 0%, color-mix(in oklab, var(--accent) 28%, transparent) 0%, transparent 62%),
+    radial-gradient(55% 40% at 92% 12%, rgba(255, 45, 85, 0.14) 0%, transparent 58%),
+    radial-gradient(60% 45% at 5% 88%, rgba(0, 229, 255, 0.12) 0%, transparent 60%);
+}
+.page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 3px);
+  mix-blend-mode: soft-light;
+  opacity: 0.7;
+}
+
+.inner {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 1.5rem);
+}
+
+/* === Hero ================================================================= */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.9rem, 4vw, 2.9rem) 0 clamp(1.6rem, 3vw, 2.3rem);
+  background:
+    linear-gradient(135deg, color-mix(in oklab, var(--accent) 45%, transparent) 0%,
+      rgba(255, 45, 85, 0.22) 55%, rgba(0, 229, 255, 0.14) 100%),
+    linear-gradient(180deg, #0d1024, #0a0a0f);
+  border-bottom: 4px solid transparent;
+  border-image: linear-gradient(90deg, var(--accent), var(--red), var(--cyan)) 1;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 64px);
+  mask-image: radial-gradient(75% 75% at 50% 40%, #000 0%, transparent 78%);
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 42%;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.09), transparent);
+  animation: sweep 9s linear infinite;
+}
+@keyframes sweep {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #cfd6f5;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.backLink:hover {
+  color: #fff;
+  border-bottom-color: currentColor;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--cyan);
+  margin-bottom: 0.6rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3.6vw, 2.5rem);
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 18px color-mix(in oklab, var(--accent) 60%, transparent);
+  margin-bottom: 0.6rem;
+}
+
+.lead {
+  max-width: 62ch;
+  font-size: clamp(0.94rem, 1.1vw, 1.02rem);
+  font-weight: 460;
+  line-height: 1.65;
+  color: #cfd6f5;
+}
+
+.heroMeta {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+.heroPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(10, 10, 15, 0.55);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+.heroPillDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+/* === Alan seçimi (indeks) ================================================= */
+
+.areaGrid {
+  display: grid;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  padding: clamp(1.6rem, 3.5vw, 2.4rem) 0;
+}
+
+.areaCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.4rem 1.4rem 1.4rem 1.7rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(160deg,
+    color-mix(in oklab, var(--accent) 14%, var(--surface)) 0%, var(--surface) 62%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.areaCard::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent) 25%, transparent));
+}
+.areaCard:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in oklab, var(--accent) 65%, var(--border));
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.55), 0 0 22px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+.areaCard:focus-visible {
+  outline: 0;
+  box-shadow: var(--ring);
+}
+
+.areaName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.01em;
+}
+.areaDesc {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.areaFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+}
+.areaCount {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.6rem;
+  border: 2px solid color-mix(in oklab, var(--accent) 50%, var(--border));
+  border-radius: 999px;
+  color: color-mix(in oklab, var(--accent) 80%, #fff);
+}
+.areaOpen {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+/* === Bölüm başlıkları ===================================================== */
+
+.sectionBand {
+  position: relative;
+  margin-top: clamp(1.4rem, 3vw, 2.2rem);
+  padding: clamp(1rem, 2.2vw, 1.4rem) 0;
+  background: linear-gradient(100deg,
+    color-mix(in oklab, var(--accent) 40%, #0a0a0f) 0%,
+    color-mix(in oklab, var(--accent) 12%, #0a0a0f) 70%, #0a0a0f 100%);
+  border-top: 3px solid color-mix(in oklab, var(--accent) 70%, transparent);
+  border-bottom: 3px solid color-mix(in oklab, var(--accent) 35%, var(--border));
+}
+.sectionTitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* === Nasıl ilerliyor ====================================================== */
+
+.steps {
+  display: grid;
+  gap: clamp(0.9rem, 2vw, 1.3rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  padding: clamp(1.3rem, 3vw, 1.9rem) 0;
+  list-style: none;
+  margin: 0;
+}
+.step {
+  position: relative;
+  padding: 1.1rem 1.2rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.stepNo {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.7rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  border: 2px solid color-mix(in oklab, var(--accent) 55%, var(--border));
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--accent) 18%, #0a0a0f);
+  color: color-mix(in oklab, var(--accent) 80%, #fff);
+}
+.stepTitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.35rem;
+}
+.stepBody {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+/* === Vaka kartları ======================================================== */
+
+.cases {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.4rem, 3vw, 2rem);
+  padding: clamp(1.4rem, 3vw, 2rem) 0;
+}
+
+.case {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(160deg,
+    color-mix(in oklab, var(--accent) 10%, var(--surface)) 0%, var(--surface) 60%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+.caseCover {
+  display: block;
+  width: 100%;
+  height: clamp(11rem, 26vw, 17rem);
+  object-fit: cover;
+  border-bottom: 2px solid var(--border);
+}
+.caseBody {
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+.caseHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem 0.9rem;
+  margin-bottom: 0.55rem;
+}
+.caseName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+  letter-spacing: 0.01em;
+}
+.caseClient {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.16rem 0.6rem;
+  border: 2px solid color-mix(in oklab, var(--accent) 50%, var(--border));
+  border-radius: 999px;
+  color: color-mix(in oklab, var(--accent) 80%, #fff);
+}
+.caseDesc {
+  max-width: 68ch;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.caseMeta {
+  display: grid;
+  gap: 1.1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  margin-top: 1.2rem;
+  padding-top: 1.1rem;
+  border-top: 2px solid var(--border);
+}
+.metaLabel {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.45rem;
+}
+.metaText {
+  color: var(--text);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+.results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.result {
+  position: relative;
+  padding-left: 1.4rem;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+.result::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.7rem;
+  height: 2px;
+  background: var(--accent);
+}
+
+.techRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.1rem;
+}
+.techChip {
+  padding: 0.22rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  color: var(--cyan);
+}
+
+.caseLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  margin-top: 1.2rem;
+  font-size: 0.9rem;
+}
+.caseLink {
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.caseLink:hover {
+  color: var(--text);
+  border-bottom-color: currentColor;
+}
+.caseLinkStrong {
+  color: var(--cyan);
+  font-weight: 600;
+}
+
+/* === Galeri =============================================================== */
+
+.gallery {
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  margin-top: 1.2rem;
+}
+.thumbButton {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0a0a0f;
+  cursor: zoom-in;
+  transition: border-color 0.18s ease, transform 0.18s ease;
+}
+.thumbButton:hover {
+  border-color: color-mix(in oklab, var(--accent) 65%, var(--border));
+  transform: translateY(-2px);
+}
+.thumbButton:focus-visible {
+  outline: 0;
+  box-shadow: var(--ring);
+}
+.thumb {
+  display: block;
+  width: 100%;
+  height: 7.5rem;
+  object-fit: cover;
+}
+.thumbCaption {
+  display: block;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--muted);
+  text-align: left;
+}
+
+/* === Büyük görsel ========================================================= */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  /* minmax(0, 1fr): satirin otomatik alt siniri buyuk gorseli kesmesin diye sifirlanir. */
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  padding: clamp(0.8rem, 2vw, 1.4rem);
+  background: rgba(5, 5, 10, 0.94);
+  backdrop-filter: blur(6px);
+}
+.lightboxBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.lightboxCount {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.lightboxFigure {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
+}
+.lightboxImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+}
+.lightboxCaption {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.lightboxNav {
+  display: flex;
+  justify-content: center;
+  gap: 0.7rem;
+}
+.iconButton {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.6rem;
+  height: 2.6rem;
+  padding: 0 0.9rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+.iconButton:hover {
+  border-color: var(--accent);
+  color: #fff;
+}
+.iconButton:focus-visible {
+  outline: 0;
+  box-shadow: var(--ring);
+}
+.iconButton[disabled] {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* === Hizmet özeti ========================================================= */
+
+.serviceGrid {
+  display: grid;
+  gap: clamp(0.9rem, 2vw, 1.3rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  padding: clamp(1.3rem, 3vw, 1.9rem) 0 0;
+}
+.serviceCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.1rem 1.2rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.serviceName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.serviceDesc {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.priceRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.8rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+.priceLabel {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.priceValue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: color-mix(in oklab, var(--accent) 75%, #fff);
+}
+.servicesLink {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--cyan);
+  font-weight: 600;
+  text-decoration: none;
+}
+.servicesLink:hover {
+  text-decoration: underline;
+}
+
+/* === Kapanış ============================================================== */
+
+.cta {
+  margin: clamp(1.8rem, 4vw, 2.6rem) 0 clamp(2.4rem, 5vw, 3.4rem);
+  padding: clamp(1.4rem, 3vw, 2rem);
+  border: 2px solid color-mix(in oklab, var(--accent) 45%, var(--border));
+  border-radius: var(--radius);
+  background: linear-gradient(140deg,
+    color-mix(in oklab, var(--accent) 22%, #0a0a0f) 0%, var(--surface) 70%);
+}
+.ctaTitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+  margin-bottom: 0.5rem;
+}
+.ctaText {
+  max-width: 62ch;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 1.1rem;
+}
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.empty {
+  padding: clamp(1.4rem, 3vw, 2rem) 0;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 62ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::after { animation: none; }
+  .areaCard:hover,
+  .thumbButton:hover { transform: none; }
+}

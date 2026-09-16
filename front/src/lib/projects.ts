@@ -2,16 +2,29 @@ import "server-only";
 import { apiFetch } from "@/lib/api";
 import { getToken } from "@/lib/session";
 
+export type GalleryImage = {
+  url: string;
+  captionTr: string;
+  captionEn: string;
+};
+
 export type ApiProject = {
   id: string;
   slug: string;
   status: string;
   name: string;
+  category: string;
   coverImage: string | null;
   shortDescTr: string;
   shortDescEn: string;
   contentTr: string;
   contentEn: string;
+  clientName: string;
+  roleTr: string;
+  roleEn: string;
+  resultsTr: string[];
+  resultsEn: string[];
+  gallery: GalleryImage[];
   techStack: string[];
   repoUrl: string | null;
   liveUrl: string | null;
@@ -24,9 +37,19 @@ export type ApiProject = {
 
 // --- Public ---
 
-export async function getPublishedProjects(): Promise<ApiProject[]> {
-  const res = await apiFetch("/api/projects");
+export async function getPublishedProjects(category?: string): Promise<ApiProject[]> {
+  const path = category
+    ? `/api/projects?category=${encodeURIComponent(category)}`
+    : "/api/projects";
+  const res = await apiFetch(path);
   if (!res.ok) return [];
+  return res.json();
+}
+
+/** Published case count per work area, e.g. { web: 3, ai: 1, ... }. */
+export async function getProjectCategoryCounts(): Promise<Record<string, number>> {
+  const res = await apiFetch("/api/project-categories");
+  if (!res.ok) return {};
   return res.json();
 }
 

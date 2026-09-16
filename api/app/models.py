@@ -47,10 +47,23 @@ class Project(Base):
     name: Mapped[str] = mapped_column(String(255), default="")  # proje adı (ortak)
     cover_image: Mapped[str | None] = mapped_column(String(1024), nullable=True)
 
+    # Work area, shared with services: web | ai | automation | devops | other.
+    category: Mapped[str] = mapped_column(String(32), default="other", index=True)
+
     short_desc_tr: Mapped[str] = mapped_column(Text, default="")  # kart açıklaması
     short_desc_en: Mapped[str] = mapped_column(Text, default="")
     content_tr: Mapped[str] = mapped_column(Text, default="")  # detay (sanitize HTML)
     content_en: Mapped[str] = mapped_column(Text, default="")
+
+    # Showcase fields: what the client sees on /showcase/<area>.
+    client_name: Mapped[str] = mapped_column(String(255), default="")
+    role_tr: Mapped[str] = mapped_column(String(255), default="")
+    role_en: Mapped[str] = mapped_column(String(255), default="")
+    # Outcome bullets, one line each: "Sayfa yüklenmesi 4.1 sn -> 0.9 sn".
+    results_tr: Mapped[list] = mapped_column(JSON, default=list)
+    results_en: Mapped[list] = mapped_column(JSON, default=list)
+    # [{"url": "/api/media/x.webp", "caption_tr": "...", "caption_en": "..."}]
+    gallery: Mapped[list] = mapped_column(JSON, default=list)
 
     tech_stack: Mapped[list] = mapped_column(JSON, default=list)  # ["Python", ...]
     repo_url: Mapped[str | None] = mapped_column(String(1024), nullable=True)

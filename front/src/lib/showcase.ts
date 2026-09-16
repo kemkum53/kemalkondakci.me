@@ -1,0 +1,322 @@
+// Showcase areas. One page per work area, sendable to a client as a single link.
+// Case studies, pictures and pricing come from the database; the copy below is
+// the part that rarely changes, so it lives in the repo.
+import { CATEGORY_ACCENTS, type WorkCategory } from "@/lib/categories";
+import type { Lang } from "@/lib/translations";
+
+export type ShowcaseStep = { title: string; body: string };
+
+export type ShowcaseCopy = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  pills: string[];
+  stepsTitle: string;
+  steps: ShowcaseStep[];
+  casesTitle: string;
+  casesEmpty: string;
+  metaTitle: string;
+  metaDescription: string;
+};
+
+export type ShowcaseArea = {
+  /** URL segment; matches the work category key. */
+  slug: WorkCategory;
+  accent: string;
+  copy: Record<Lang, ShowcaseCopy>;
+};
+
+export const SHOWCASE_AREAS: ShowcaseArea[] = [
+  {
+    slug: "web",
+    accent: CATEGORY_ACCENTS.web,
+    copy: {
+      tr: {
+        eyebrow: "Web ve e-ticaret",
+        title: "Satış yapan siteler, yönetimi size kalan paneller",
+        lead: "Kurumsal site, ürün kataloğu ya da ödeme alan bir mağaza. Tasarımdan sunucusuna kadar tek elden kuruyorum. Teslimden sonra içeriği kendiniz yönetiyorsunuz, her değişiklik için bana dönmeniz gerekmiyor.",
+        pills: ["Mobil öncelikli tasarım", "Yönetim paneli dahil", "Teslimde kullanım eğitimi"],
+        stepsTitle: "Nasıl ilerliyor",
+        steps: [
+          {
+            title: "Kapsamı çıkarıyoruz",
+            body: "Ne satacağınızı, kaç sayfa gerektiğini ve elinizde hangi içeriğin hazır olduğunu konuşuyoruz. Çıkan liste fiyatın da temeli oluyor.",
+          },
+          {
+            title: "Tasarım ve geliştirme",
+            body: "Önce ana sayfayı görüyorsunuz. Onayınız çıkınca kalan sayfalar ve yönetim paneli geliyor.",
+          },
+          {
+            title: "Yayın ve devir",
+            body: "Alan adı, sertifika ve sunucu ayarlarını ben yapıyorum. Paneli birlikte geziyoruz, kullanımını gösteriyorum.",
+          },
+        ],
+        casesTitle: "Yapılan işler",
+        casesEmpty: "Bu alandaki işler yakında burada olacak. O zamana kadar ihtiyacınızı yazarsanız benzer bir örnek gösterebilirim.",
+        metaTitle: "Web ve E-ticaret İşleri",
+        metaDescription:
+          "Kurumsal siteler, ürün katalogları ve ödeme alan mağazalar. Yapılan işler, ekran görüntüleri ve fiyatlarıyla.",
+      },
+      en: {
+        eyebrow: "Web and e-commerce",
+        title: "Sites that sell, panels you run yourself",
+        lead: "A company site, a product catalogue or a shop that takes payments. I build it end to end, design through to the server. After handover you manage the content yourself instead of coming back to me for every change.",
+        pills: ["Mobile-first design", "Admin panel included", "Training at handover"],
+        stepsTitle: "How it runs",
+        steps: [
+          {
+            title: "We scope it",
+            body: "What you sell, how many pages it needs, which content you already have. That list is also what the price is built on.",
+          },
+          {
+            title: "Design and build",
+            body: "You see the home page first. Once you sign off on it, the rest of the pages and the admin panel follow.",
+          },
+          {
+            title: "Launch and handover",
+            body: "I handle the domain, the certificate and the server setup. Then we walk through the panel together.",
+          },
+        ],
+        casesTitle: "Selected work",
+        casesEmpty: "Work in this area is coming here soon. In the meantime, tell me what you need and I can show you something similar.",
+        metaTitle: "Web and E-commerce Work",
+        metaDescription:
+          "Company sites, product catalogues and shops that take payments. Case studies, screenshots and pricing.",
+      },
+    },
+  },
+  {
+    slug: "ai",
+    accent: CATEGORY_ACCENTS.ai,
+    copy: {
+      tr: {
+        eyebrow: "Yapay zekâ ve chatbot",
+        title: "Kendi verinizle konuşan sistemler",
+        lead: "Ürün kataloğunuz, fiyat listeniz ya da doküman arşiviniz üzerinde çalışan chatbot ve arama sistemleri. Cevaplar sizin verinize bağlanıyor, model kendi kafasından uydurmuyor.",
+        pills: ["Kendi verinize bağlı", "WhatsApp ve web", "Cevabın kaynağını gösterir"],
+        stepsTitle: "Nasıl ilerliyor",
+        steps: [
+          {
+            title: "Veriyi bağlıyoruz",
+            body: "Hangi kaynaktan cevap üreteceğini belirliyoruz: veritabanı, PDF arşivi, site içeriği ya da üçünün birleşimi.",
+          },
+          {
+            title: "Sınırları çiziyoruz",
+            body: "Nelere cevap verecek, hangi soruda sizi devreye alacak. Deneme sürümünü gerçek müşteri sorularıyla test ediyoruz.",
+          },
+          {
+            title: "Yayın ve ölçüm",
+            body: "Kaç soru geldi, hangilerinde takıldı, hangi ürün soruldu. Aylık raporda görüyorsunuz.",
+          },
+        ],
+        casesTitle: "Yapılan işler",
+        casesEmpty: "Bu alandaki işler yakında burada olacak. Elinizdeki veriyi anlatırsanız neyin mümkün olduğunu söyleyebilirim.",
+        metaTitle: "Yapay Zekâ ve Chatbot İşleri",
+        metaDescription:
+          "Kendi veritabanınıza, kataloğunuza veya doküman arşivinize bağlı chatbot ve arama sistemleri.",
+      },
+      en: {
+        eyebrow: "AI and chatbots",
+        title: "Systems that answer from your own data",
+        lead: "Chatbots and search built on your product catalogue, price list or document archive. Answers are grounded in your data rather than invented by the model.",
+        pills: ["Grounded in your data", "WhatsApp and web", "Cites its source"],
+        stepsTitle: "How it runs",
+        steps: [
+          {
+            title: "We connect the data",
+            body: "We decide where answers come from: a database, a PDF archive, your site content, or all three.",
+          },
+          {
+            title: "We set the limits",
+            body: "What it answers and where it hands over to you. We test the trial version with real customer questions.",
+          },
+          {
+            title: "Launch and measurement",
+            body: "How many questions came in, where it got stuck, which products people asked about. It is in the monthly report.",
+          },
+        ],
+        casesTitle: "Selected work",
+        casesEmpty: "Work in this area is coming here soon. Describe the data you hold and I can tell you what is possible with it.",
+        metaTitle: "AI and Chatbot Work",
+        metaDescription:
+          "Chatbots and search systems connected to your own database, catalogue or document archive.",
+      },
+    },
+  },
+  {
+    slug: "automation",
+    accent: CATEGORY_ACCENTS.automation,
+    copy: {
+      tr: {
+        eyebrow: "Otomasyon ve entegrasyon",
+        title: "Elle yaptığınız işi arka planda yapan akışlar",
+        lead: "Sipariş, fatura, stok ve mesaj akışlarını birbirine bağlıyorum. Bir yerden kopyalayıp öbürüne yapıştırdığınız iş, siz dokunmadan işliyor.",
+        pills: ["Mevcut programlarınıza bağlanır", "Akış durursa haber verir"],
+        stepsTitle: "Nasıl ilerliyor",
+        steps: [
+          {
+            title: "Akışı çıkarıyoruz",
+            body: "Hangi işi kim, ne sıklıkla, hangi programda yapıyor. Tek tek yazıyoruz. Genelde en çok vakit yiyen adım baştan belli oluyor.",
+          },
+          {
+            title: "Bağlantıları kuruyoruz",
+            body: "Muhasebe programı, kargo firması, pazaryeri, WhatsApp. Hangisinde hazır bağlantı varsa oradan, yoksa başka yoldan.",
+          },
+          {
+            title: "İzleme",
+            body: "Akış durduğunda sessizce bozulmasın diye haber veren bir katman koyuyorum. Hatayı siz müşteriden duymuyorsunuz.",
+          },
+        ],
+        casesTitle: "Yapılan işler",
+        casesEmpty: "Bu alandaki işler yakında burada olacak. Tekrar eden işinizi anlatırsanız otomatikleşir mi diye bakayım.",
+        metaTitle: "Otomasyon ve Entegrasyon İşleri",
+        metaDescription:
+          "Sipariş, fatura, stok ve mesaj akışlarını birbirine bağlayan otomasyon işleri.",
+      },
+      en: {
+        eyebrow: "Automation and integration",
+        title: "Flows that do the manual work in the background",
+        lead: "I connect order, invoice, stock and messaging flows to each other. The work you do by copying from one screen into another runs without you touching it.",
+        pills: ["Connects to what you already use", "Alerts you when a flow stops"],
+        stepsTitle: "How it runs",
+        steps: [
+          {
+            title: "We map the flow",
+            body: "Who does which task, how often, in which program. We write it down step by step. The step eating most of the time is usually obvious straight away.",
+          },
+          {
+            title: "We build the connections",
+            body: "Accounting software, courier, marketplace, WhatsApp. Through a ready interface where there is one, another way where there is not.",
+          },
+          {
+            title: "Monitoring",
+            body: "A layer that tells you when a flow stops, so it does not fail quietly. You do not hear about the problem from a customer.",
+          },
+        ],
+        casesTitle: "Selected work",
+        casesEmpty: "Work in this area is coming here soon. Describe the repetitive task and I will look at whether it can be automated.",
+        metaTitle: "Automation and Integration Work",
+        metaDescription:
+          "Automation work connecting order, invoice, stock and messaging flows to each other.",
+      },
+    },
+  },
+  {
+    slug: "devops",
+    accent: CATEGORY_ACCENTS.devops,
+    copy: {
+      tr: {
+        eyebrow: "DevOps ve altyapı",
+        title: "Sunucusu, yedeği ve dağıtımı düzgün kurulmuş sistemler",
+        lead: "Çalışan uygulamanızı container'lara taşıyıp yayına alma sürecini otomatikleştiriyorum. Sunucuya elle dosya atarak güncelleme dönemi kapanıyor.",
+        pills: ["Docker ve CI/CD", "Yedek ve geri dönüş testi", "Kesintisiz güncelleme"],
+        stepsTitle: "Nasıl ilerliyor",
+        steps: [
+          {
+            title: "Mevcut durumu çıkarıyoruz",
+            body: "Ne nerede çalışıyor, yedek alınıyor mu, alınan yedek geri dönüyor mu, güncelleme nasıl yapılıyor.",
+          },
+          {
+            title: "Taşıma ve otomasyon",
+            body: "Servisleri container'lara alıyoruz. Testten geçen kod kendiliğinden yayına gidiyor, geçmeyen gitmiyor.",
+          },
+          {
+            title: "Devir",
+            body: "Günlük işleri nereden yapacağınızı ve bir şey bozulduğunda nereye bakacağınızı yazılı bırakıyorum.",
+          },
+        ],
+        casesTitle: "Yapılan işler",
+        casesEmpty: "Bu alandaki işler yakında burada olacak. Mevcut kurulumunuzu anlatırsanız nereden başlanacağını söyleyebilirim.",
+        metaTitle: "DevOps ve Altyapı İşleri",
+        metaDescription:
+          "Docker'a taşıma, CI/CD kurulumu, yedekleme ve sunucu yönetimi işleri.",
+      },
+      en: {
+        eyebrow: "DevOps and infrastructure",
+        title: "Systems with the server, backups and deployment set up properly",
+        lead: "I move your running application into containers and automate the path to production. Updating by copying files onto a server comes to an end.",
+        pills: ["Docker and CI/CD", "Backups tested by restoring them", "Zero-downtime updates"],
+        stepsTitle: "How it runs",
+        steps: [
+          {
+            title: "We map what you have",
+            body: "What runs where, whether backups are taken, whether they actually restore, how updates get out.",
+          },
+          {
+            title: "Migration and automation",
+            body: "Services move into containers. Code that passes the tests ships by itself; code that fails them does not.",
+          },
+          {
+            title: "Handover",
+            body: "I leave written instructions for the day-to-day tasks and for where to look when something breaks.",
+          },
+        ],
+        casesTitle: "Selected work",
+        casesEmpty: "Work in this area is coming here soon. Describe your current setup and I can tell you where to start.",
+        metaTitle: "DevOps and Infrastructure Work",
+        metaDescription:
+          "Moving applications to Docker, CI/CD setup, backups and server management.",
+      },
+    },
+  },
+];
+
+export function getShowcaseArea(slug: string): ShowcaseArea | undefined {
+  return SHOWCASE_AREAS.find((a) => a.slug === slug);
+}
+
+/** Copy shared by the index page and every area page. */
+export const SHOWCASE_COMMON = {
+  tr: {
+    indexEyebrow: "Yapılan işler",
+    indexTitle: "Hangi alanda çalıştığımı görün",
+    indexLead: "Her alanın kendi sayfası var: yapılan işler, ekran görüntüleri ve o alandaki hizmetlerin fiyatları. İlgilendiğiniz alanı seçin.",
+    caseCount: (n: number) => (n === 1 ? "1 iş" : `${n} iş`),
+    caseCountEmpty: "Yakında",
+    open: "İncele",
+    backToAreas: "Diğer alanlar",
+    role: "Benim rolüm",
+    client: "Müşteri",
+    results: "Sonuç",
+    tech: "Kullanılan teknolojiler",
+    gallery: "Görseller",
+    detail: "Proje detayı",
+    live: "Canlı site",
+    repo: "Kaynak kodu",
+    servicesTitle: "Bu alandaki hizmetler ve fiyatlar",
+    servicesLink: "Fiyat listesinin tamamı",
+    ctaTitle: "Benzer bir işe ihtiyacınız varsa",
+    ctaText: "Yapmak istediğinizi birkaç cümleyle yazın. Uygulanabilir mi, ne kadar sürer, ne kadar tutar diye bakıp net bir kapsamla dönerim.",
+    ctaPrimary: "İhtiyacınızı yazın",
+    ctaSecondary: "Fiyatlara bakın",
+    close: "Kapat",
+    previous: "Önceki görsel",
+    next: "Sonraki görsel",
+  },
+  en: {
+    indexEyebrow: "Selected work",
+    indexTitle: "See the areas I work in",
+    indexLead: "Each area has its own page: the work, the screenshots and what the services in that area cost. Pick the one you are interested in.",
+    caseCount: (n: number) => (n === 1 ? "1 project" : `${n} projects`),
+    caseCountEmpty: "Coming soon",
+    open: "Open",
+    backToAreas: "Other areas",
+    role: "My role",
+    client: "Client",
+    results: "Outcome",
+    tech: "Built with",
+    gallery: "Pictures",
+    detail: "Project details",
+    live: "Live site",
+    repo: "Source code",
+    servicesTitle: "Services and pricing in this area",
+    servicesLink: "See the full price list",
+    ctaTitle: "If you need something similar",
+    ctaText: "Describe what you want in a few sentences. I will tell you whether it is feasible, how long it takes and what it costs, with a concrete scope.",
+    ctaPrimary: "Tell me what you need",
+    ctaSecondary: "See pricing",
+    close: "Close",
+    previous: "Previous picture",
+    next: "Next picture",
+  },
+} as const;
