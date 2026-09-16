@@ -122,7 +122,7 @@ export default function KatanaNavbar({
               minHeight: '44px'
             }}
           >
-            {isTransitioning ? "⚡" : lang === "en" ? "🇹🇷" : "🇬🇧"}
+            {isTransitioning ? "⚡" : lang === "en" ? "TR" : "EN"}
           </button>
         </nav>
 
@@ -187,7 +187,7 @@ export default function KatanaNavbar({
             width: 'auto'
           }}
         >
-          {isTransitioning ? "⚡" : lang === "en" ? "🇹🇷" : "🇬🇧"}
+          {isTransitioning ? "⚡" : lang === "en" ? "TR" : "EN"}
         </button>
       </div>
     </div>

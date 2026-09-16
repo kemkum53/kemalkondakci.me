@@ -89,7 +89,7 @@ export default function ProjectForm({ project }: { project?: ProjectFormData }) 
                 : "bg-[var(--surface)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)]"
             }`}
           >
-            {lang === "tr" ? "🇹🇷 Türkçe" : "🇬🇧 English"}
+            {lang === "tr" ? "Türkçe" : "English"}
           </button>
         ))}
       </div>
