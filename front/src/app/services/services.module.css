@@ -206,9 +206,12 @@
 .categorySection {
   padding-top: 0;
 }
-/* İlk bant filtre çubuğuna yapışmasın ama araya büyük boşluk da girmesin. */
+/* İlk başlık: ayırıcıyı filtre çubuğunun alt çizgisi zaten veriyor.
+   Kendi çizgisini de çizerse 20 küsur piksel arayla iki çizgi üst üste gelir. */
 .categorySectionFirst .categoryBand {
-  margin-top: clamp(1rem, 2vw, 1.4rem);
+  margin-top: clamp(1.4rem, 2.6vw, 1.9rem);
+  padding-top: 0;
+  border-top: 0;
 }
 .categoryBand {
   position: relative;
