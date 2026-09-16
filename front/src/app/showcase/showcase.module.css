@@ -314,7 +314,8 @@
   border-bottom: 2px solid var(--border);
 }
 .caseBody {
-  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+  --case-pad: clamp(1.1rem, 2.4vw, 1.6rem);
+  padding: var(--case-pad);
 }
 .caseHead {
   display: flex;
@@ -643,8 +644,44 @@
   max-width: 62ch;
 }
 
+/* === Dar ekran ============================================================ */
+/* Mobilde vaka karti bir ekrana sigmiyordu. Iki sebep vardi: galeri kucuk
+   gorselleri tam genislikte alt alta diziliyordu ve kapak, galerinin ilk
+   gorseliyle ayni seyi tekrar gosteriyordu. Masaustu duzeni degismiyor. */
+
+@media (max-width: 640px) {
+  /* Galeri: alt alta yigin yerine parmakla kaydirilan serit. Ucuncu gorsel
+     kenardan gorunur, boylece kaydirilabildigi anlasilir. */
+  .gallery {
+    display: flex;
+    gap: 0.6rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    padding-bottom: 0.5rem;
+    margin-inline: calc(-1 * var(--case-pad, 0px));
+    padding-inline: var(--case-pad, 0px);
+  }
+  .thumbButton {
+    flex: 0 0 46%;
+    scroll-snap-align: start;
+  }
+  .thumb {
+    height: 5.5rem;
+  }
+  .thumbCaption {
+    font-size: 0.72rem;
+  }
+
+  /* Galerisi olan vakada kapak ayni gorseli tekrar ediyor; darda gizlenir. */
+  .caseCoverRedundant {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero::after { animation: none; }
   .areaCard:hover,
   .thumbButton:hover { transform: none; }
+  .gallery { scroll-behavior: auto; }
 }

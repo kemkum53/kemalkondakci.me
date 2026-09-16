@@ -123,14 +123,19 @@ export default function ShowcaseAreaView({ area, cases, services }: Props) {
                         <img
                           src={c.coverImage}
                           alt={c.name}
-                          className={styles.caseCover}
+                          // Galerisi olan vakada kapak aynı görseli tekrar eder;
+                          // dar ekranda gizlenir, masaüstünde kalır.
+                          className={`${styles.caseCover} ${
+                            c.gallery.length > 0 ? styles.caseCoverRedundant : ""
+                          }`}
                           loading="lazy"
                         />
                       )}
                       <div className={styles.caseBody}>
                         <div className={styles.caseHead}>
                           <h3 className={styles.caseName}>{c.name}</h3>
-                          {c.clientName && (
+                          {/* Müşteri adı proje adıyla aynıysa rozet tekrar olur. */}
+                          {c.clientName && c.clientName !== c.name && (
                             <span className={styles.caseClient}>{c.clientName}</span>
                           )}
                         </div>
