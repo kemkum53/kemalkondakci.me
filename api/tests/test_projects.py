@@ -152,3 +152,52 @@ def test_gallery_and_results_are_capped(client, auth_headers):
     ).json()
     assert len(data["gallery"]) == 12
     assert len(data["resultsEn"]) == 8
+
+
+# --- Sıralama (sürükle-bırak) ----------------------------------------------
+
+def test_reorder_sets_positions(client, auth_headers):
+    a = _create(client, auth_headers, name="A").json()
+    b = _create(client, auth_headers, name="B").json()
+    c = _create(client, auth_headers, name="C").json()
+
+    res = client.patch(
+        "/api/admin/projects/reorder",
+        json={"ids": [c["id"], a["id"], b["id"]]},
+        headers=auth_headers,
+    )
+    assert res.status_code == 204
+
+    order = {p["id"]: p["position"] for p in client.get("/api/admin/projects", headers=auth_headers).json()}
+    assert order[c["id"]] == 0
+    assert order[a["id"]] == 1
+    assert order[b["id"]] == 2
+
+
+def test_reorder_requires_auth(client, auth_headers):
+    a = _create(client, auth_headers, name="A").json()
+    assert client.patch("/api/admin/projects/reorder", json={"ids": [a["id"]]}).status_code == 401
+
+
+def test_reorder_ignores_unknown_ids(client, auth_headers):
+    a = _create(client, auth_headers, name="A").json()
+    res = client.patch(
+        "/api/admin/projects/reorder",
+        json={"ids": ["yok", a["id"]]},
+        headers=auth_headers,
+    )
+    assert res.status_code == 204
+    order = {p["id"]: p["position"] for p in client.get("/api/admin/projects", headers=auth_headers).json()}
+    assert order[a["id"]] == 1
+
+
+def test_published_list_follows_position(client, auth_headers):
+    a = _create(client, auth_headers, status="published", name="A").json()
+    b = _create(client, auth_headers, status="published", name="B").json()
+    client.patch(
+        "/api/admin/projects/reorder",
+        json={"ids": [b["id"], a["id"]]},
+        headers=auth_headers,
+    )
+    names = [p["name"] for p in client.get("/api/projects").json()]
+    assert names == ["B", "A"]

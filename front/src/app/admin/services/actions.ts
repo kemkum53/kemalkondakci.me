@@ -112,3 +112,16 @@ export async function deleteService(id: string) {
   await apiFetch(`/api/admin/services/${id}`, { method: "DELETE", token });
   revalidateAll();
 }
+
+export async function reorderServices(ids: string[]): Promise<{ error?: string }> {
+  const token = await getToken();
+  if (!token) return { error: "Oturum süresi doldu." };
+  const res = await apiFetch("/api/admin/services/reorder", {
+    method: "PATCH",
+    body: { ids },
+    token,
+  });
+  if (!res.ok) return { error: "Sıralama kaydedilemedi." };
+  revalidateAll();
+  return {};
+}

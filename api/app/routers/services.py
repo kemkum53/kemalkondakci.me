@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from ..deps import get_current_admin
 from ..models import Service
-from ..schemas import ServiceIn, ServiceOut, ServiceReference
+from ..schemas import ReorderIn, ServiceIn, ServiceOut, ServiceReference
 from ..slug import unique_slug
 
 # --- Public ---
@@ -92,9 +92,27 @@ def _apply(service: Service, data: ServiceIn) -> None:
 
 @admin_router.get("/services", response_model=list[ServiceOut])
 def list_all(db: Session = Depends(get_db)):
+    # Public sayfayla aynı sıra: öne çıkanlar üstte, sonra manuel sıra.
     return db.scalars(
-        select(Service).order_by(Service.position.asc(), Service.updated_at.desc())
+        select(Service).order_by(
+            Service.featured.desc(), Service.position.asc(), Service.updated_at.desc()
+        )
     ).all()
+
+
+@admin_router.patch("/services/reorder", status_code=status.HTTP_204_NO_CONTENT)
+def reorder_services(data: ReorderIn, db: Session = Depends(get_db)):
+    """Sürükle-bırak sonrası: verilen id sırasına göre position 0..n atar."""
+    found = {
+        s.id: s
+        for s in db.scalars(select(Service).where(Service.id.in_(data.ids))).all()
+    }
+    for index, sid in enumerate(data.ids):
+        service = found.get(sid)
+        if service is not None:
+            service.position = index
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @admin_router.get("/services/{service_id}", response_model=ServiceOut)

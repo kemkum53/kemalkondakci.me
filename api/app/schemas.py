@@ -124,6 +124,12 @@ class UploadOut(CamelModel):
     location: str
 
 
+class ReorderIn(CamelModel):
+    """Sürükle-bırak sonrası yeni sıra: id listesi, baştan sona istenen düzen."""
+
+    ids: list[str]
+
+
 # --- Projects ---
 class GalleryImage(CamelModel):
     """One picture in a case study gallery. Caption is optional, per language."""

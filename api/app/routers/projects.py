@@ -9,7 +9,7 @@ from ..database import get_db
 from ..deps import get_current_admin
 from ..models import Project
 from ..sanitize import sanitize_html
-from ..schemas import GalleryImage, ProjectIn, ProjectOut
+from ..schemas import GalleryImage, ProjectIn, ProjectOut, ReorderIn
 from ..slug import unique_slug
 
 # A case study reads as a story, not a contact sheet; cap the gallery.
@@ -104,9 +104,28 @@ def _apply(project: Project, data: ProjectIn) -> None:
 
 @admin_router.get("/projects", response_model=list[ProjectOut])
 def list_all(db: Session = Depends(get_db)):
+    # Public sayfayla aynı sıra: öne çıkanlar üstte, sonra manuel sıra.
     return db.scalars(
-        select(Project).order_by(Project.position.asc(), Project.updated_at.desc())
+        select(Project).order_by(
+            Project.featured.desc(), Project.position.asc(), Project.updated_at.desc()
+        )
     ).all()
+
+
+@admin_router.patch("/projects/reorder", status_code=status.HTTP_204_NO_CONTENT)
+def reorder_projects(data: ReorderIn, db: Session = Depends(get_db)):
+    """Sürükle-bırak sonrası: verilen id sırasına göre position 0..n atar.
+    Listede olmayan projelere dokunmaz."""
+    found = {
+        p.id: p
+        for p in db.scalars(select(Project).where(Project.id.in_(data.ids))).all()
+    }
+    for index, pid in enumerate(data.ids):
+        project = found.get(pid)
+        if project is not None:
+            project.position = index
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @admin_router.get("/projects/{project_id}", response_model=ProjectOut)

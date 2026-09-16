@@ -129,3 +129,16 @@ export async function deleteProject(id: string) {
   await apiFetch(`/api/admin/projects/${id}`, { method: "DELETE", token });
   revalidateAll();
 }
+
+export async function reorderProjects(ids: string[]): Promise<{ error?: string }> {
+  const token = await getToken();
+  if (!token) return { error: "Oturum süresi doldu." };
+  const res = await apiFetch("/api/admin/projects/reorder", {
+    method: "PATCH",
+    body: { ids },
+    token,
+  });
+  if (!res.ok) return { error: "Sıralama kaydedilemedi." };
+  revalidateAll();
+  return {};
+}
