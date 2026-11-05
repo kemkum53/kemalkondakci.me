@@ -3,7 +3,7 @@
 ############################
 # 1) Bağımlılıklar
 ############################
-FROM node:20-alpine AS deps
+FROM node:22-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
 COPY package.json package-lock.json* ./
@@ -12,7 +12,7 @@ RUN npm ci
 ############################
 # 2) Derleme
 ############################
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 # Build sırasında env doğrulaması (session) patlamasın diye geçici placeholder.
@@ -29,13 +29,13 @@ RUN npm run build
 ############################
 # 3) Çalıştırıcı
 ############################
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 # libc6-compat: Next standalone'un ihtiyac duydugu glibc uyumlulugu.
 # apk upgrade: base image sistem paketlerini (ozellikle openssl/libssl3)
 #   en guncel yamali surume cikarir -> OS katmani CVE'lerini kapatir.
 # npm/npx sil: 'node server.js' calismak icin npm GEREKMEZ (sadece build-time
-#   araci). node:20-alpine ile gelen npm, kendi icinde eski tar/glob/minimatch/
+#   araci). node:22-alpine ile gelen npm, kendi icinde eski tar/glob/minimatch/
 #   cross-spawn tasir; bunlari silmek o CVE'leri ve gereksiz saldiri yuzeyini
 #   tek seferde kaldirir, image'i da kuculttur.
 RUN apk add --no-cache libc6-compat && apk upgrade --no-cache \
