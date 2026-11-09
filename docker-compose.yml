@@ -29,7 +29,7 @@ services:
       retries: 10
     # p99 17 MB, max 22 MB. Not below 256 MB: shared_buffers alone is 128 MB.
     mem_limit: 256m
-    cpus: 0.5
+    cpus: 1.0
     logging: *logging
     labels:
       - fleet.project=kemalkondakci
@@ -70,7 +70,7 @@ services:
       start_interval: 5s
     # p99 66 MB, max 65 MB.
     mem_limit: 128m
-    cpus: 0.5
+    cpus: 1.0
     logging: *logging
     labels:
       - fleet.project=kemalkondakci
@@ -108,7 +108,7 @@ services:
       start_interval: 5s
     # p99 83 MB, max 119 MB, CPU p95 15%, hourly peak 130%.
     mem_limit: 192m
-    cpus: 0.75
+    cpus: 1.0
     logging: *logging
     labels:
       - "traefik.enable=true"
