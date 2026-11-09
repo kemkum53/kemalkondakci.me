@@ -1,40 +1,59 @@
+# The master copy of this file lives on the server. The repository keeps an example.
+# The server pulls the images from GHCR; `build` stays so `docker compose up --build` works locally.
+# Limits come from 30 days of measurements on this host.
+
 name: kemalkondakci.me
 
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "3" }
+
 services:
-  # PostgreSQL — sadece iç ağda, dışarı kapalı
+  # PostgreSQL, internal network only.
   db:
     image: postgres:16-alpine
     container_name: kemalkondakci-db
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=${POSTGRES_USER:-blog}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-blog}
-      - POSTGRES_DB=${POSTGRES_DB:-blog}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks:
       - internal
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-blog}"]
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
       interval: 5s
       timeout: 5s
       retries: 10
+    # p99 17 MB, max 22 MB. Not below 256 MB: shared_buffers alone is 128 MB.
+    mem_limit: 256m
+    cpus: 0.5
+    logging: *logging
+    labels:
+      - fleet.project=kemalkondakci
+      - fleet.group=kemal
+      - fleet.repo=github.com/kemkum53/kemalkondakci.me
+      - fleet.env=prod
+      - fleet.exposure=internal
+      - fleet.criticality=normal
+      - fleet.owner=kemal
+      - fleet.backup=postgres
 
-  # FastAPI backend — iç ağda, dışarı kapalı (Next BFF üzerinden erişilir)
+  # FastAPI backend, internal network only; reached through the Next BFF.
   api:
-    # Sunucu bu image'i GHCR'den ceker (docker compose pull).
-    # 'build' de duruyor: yerelde 'docker compose build/up --build' hala calisir.
     image: ghcr.io/kemkum53/kemalkondakci.me-api:latest
     build: ./api
     container_name: kemalkondakci-api
     restart: unless-stopped
-    # JWT_SECRET ve ADMIN_* gibi `$` içerebilen sırlar env_file ile (literal) gelir
+    # Secrets that may contain `$` (JWT_SECRET, ADMIN_*) come in literally through env_file.
     env_file:
       - ./api/.env
     environment:
-      - DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER:-blog}:${POSTGRES_PASSWORD:-blog}@db:5432/${POSTGRES_DB:-blog}
+      - DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - UPLOADS_DIR=/app/uploads
-      - CORS_ORIGINS=["https://kemalkondakci.me"]
+      - CORS_ORIGINS=${CORS_ORIGINS}
     volumes:
       - uploads:/app/uploads
     depends_on:
@@ -42,32 +61,72 @@ services:
         condition: service_healthy
     networks:
       - internal
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=4)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
+    # p99 66 MB, max 65 MB.
+    mem_limit: 128m
+    cpus: 0.5
+    logging: *logging
+    labels:
+      - fleet.project=kemalkondakci
+      - fleet.group=kemal
+      - fleet.repo=github.com/kemkum53/kemalkondakci.me
+      - fleet.env=prod
+      - fleet.exposure=internal
+      - fleet.criticality=normal
+      - fleet.owner=kemal
+      - fleet.backup=volume
 
-  # Next.js frontend (BFF) — Traefik tarafından dışarı açılan tek servis
+  # Next.js frontend (BFF), the only service Traefik exposes.
   front:
-    # Sunucu bu image'i GHCR'den ceker; 'build' yerelde calismaya devam eder.
     image: ghcr.io/kemkum53/kemalkondakci.me-front:latest
     build: ./front
     container_name: kemalkondakci-front
     restart: unless-stopped
     environment:
-      - NODE_ENV=production
-      - PORT=3000
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
       - API_URL=http://api:8000
       - SESSION_SECRET=${SESSION_SECRET}
-      - COOKIE_SECURE=true
+      - COOKIE_SECURE=${COOKIE_SECURE}
     depends_on:
       - api
     networks:
       - internal
-      - traefik_default
+      - traefik
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
+    # p99 83 MB, max 119 MB, CPU p95 15%, hourly peak 130%.
+    mem_limit: 192m
+    cpus: 0.75
+    logging: *logging
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.kemalkondakci.rule=Host(`kemalkondakci.me`)"
       - "traefik.http.routers.kemalkondakci.entrypoints=websecure"
       - "traefik.http.routers.kemalkondakci.tls=true"
+      - "traefik.http.routers.kemalkondakci.tls.certresolver=le"
       - "traefik.http.services.kemalkondakci.loadbalancer.server.port=3000"
-      - "traefik.docker.network=traefik_default"
+      - "traefik.docker.network=traefik"
+      - fleet.project=kemalkondakci
+      - fleet.group=kemal
+      - fleet.repo=github.com/kemkum53/kemalkondakci.me
+      - fleet.env=prod
+      - fleet.exposure=public
+      - fleet.criticality=normal
+      - fleet.owner=kemal
+      - fleet.backup=none
+      - fleet.backup.none_reason=stateless, data is in db and the uploads volume
 
 volumes:
   pg_data:
@@ -75,5 +134,5 @@ volumes:
 
 networks:
   internal:
-  traefik_default:
+  traefik:
     external: true
