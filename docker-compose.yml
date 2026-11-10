@@ -1,5 +1,5 @@
 # The master copy of this file lives on the server. The repository keeps an example.
-# The server pulls the images from GHCR; `build` stays so `docker compose up --build` works locally.
+# The server pulls the images from ECR (CI hands it a 12 hour token over SSH); `build` stays so `docker compose up --build` works locally.
 # Limits come from 30 days of measurements on this host.
 
 name: kemalkondakci.me
@@ -43,7 +43,7 @@ services:
 
   # FastAPI backend, internal network only; reached through the Next BFF.
   api:
-    image: ghcr.io/kemkum53/kemalkondakci.me-api:latest
+    image: 524843733544.dkr.ecr.us-east-2.amazonaws.com/kemalkondakci-api:latest
     build: ./api
     container_name: kemalkondakci-api
     restart: unless-stopped
@@ -84,14 +84,15 @@ services:
 
   # Next.js frontend (BFF), the only service Traefik exposes.
   front:
-    image: ghcr.io/kemkum53/kemalkondakci.me-front:latest
+    image: 524843733544.dkr.ecr.us-east-2.amazonaws.com/kemalkondakci-front:latest
     build: ./front
     container_name: kemalkondakci-front
     restart: unless-stopped
     environment:
       - NODE_ENV=${NODE_ENV}
       - PORT=${PORT}
-      - API_URL=http://api:8000
+      # Container name, not service name: `api` is also a name on the shared traefik network.
+      - API_URL=http://kemalkondakci-api:8000
       - SESSION_SECRET=${SESSION_SECRET}
       - COOKIE_SECURE=${COOKIE_SECURE}
     depends_on:

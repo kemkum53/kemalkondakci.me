@@ -5,16 +5,16 @@ on:
     branches: [ main ]
   pull_request:
 
-# GHCR'ye (ghcr.io) image push edebilmek icin GITHUB_TOKEN'a pakete yazma izni.
-# contents:read -> checkout icin yeterli.
+# Image'lar AWS ECR'a gidiyor (IAM kullanicisi github-actions-ci); GITHUB_TOKEN'a sadece okuma.
 permissions:
   contents: read
-  packages: write
 
-# Image adlarini tek yerde tut (GHCR adlari KUCUK HARF olmali).
+# Image adlarini tek yerde tut.
 env:
-  IMAGE_API: ghcr.io/kemkum53/kemalkondakci.me-api
-  IMAGE_FRONT: ghcr.io/kemkum53/kemalkondakci.me-front
+  AWS_REGION: us-east-2
+  REGISTRY: 524843733544.dkr.ecr.us-east-2.amazonaws.com
+  IMAGE_API: 524843733544.dkr.ecr.us-east-2.amazonaws.com/kemalkondakci-api
+  IMAGE_FRONT: 524843733544.dkr.ecr.us-east-2.amazonaws.com/kemalkondakci-front
 
 jobs:
   # ============ Backend testleri (FastAPI / pytest) ============
@@ -60,19 +60,25 @@ jobs:
       - name: Testleri calistir (vitest)
         run: npm run test
 
-  # ============ api image build + GHCR push (test-api gecince) ============
+  # ============ api image build + ECR push (test-api gecince) ============
   build-api:
     runs-on: ubuntu-latest
     needs: test-api                     # api testleri gecmeden build yok
     steps:
       - uses: actions/checkout@v4
 
-      - name: GHCR'ye login ol
-        uses: docker/login-action@v3
+      # PR'larda push yok, AWS kimligi de gerekmiyor.
+      - name: AWS kimligi (sadece main)
+        if: github.event_name != 'pull_request'
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}            # = kemkum53
-          password: ${{ secrets.GITHUB_TOKEN }}    # Actions otomatik saglar
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: ECR'a login ol (sadece main)
+        if: github.event_name != 'pull_request'
+        uses: aws-actions/amazon-ecr-login@v2
 
       # 1) Once SADECE build et ve runner'in yerel docker'ina yukle (push YOK).
       #    'load: true' -> image'i taranabilmesi icin daemon'a alir.
@@ -101,26 +107,32 @@ jobs:
           # api temiz -> ENFORCE: HIGH/CRITICAL bulunursa job FAIL -> push/deploy olmaz.
           exit-code: '1'
 
-      # 3) Tarama gecince (ve sadece main'de) GHCR'ye push et.
-      - name: GHCR'ye push (sadece main)
+      # 3) Tarama gecince (ve sadece main'de) ECR'a push et.
+      - name: ECR'a push (sadece main)
         if: github.event_name != 'pull_request'
         run: |
           docker push ${{ env.IMAGE_API }}:latest
           docker push ${{ env.IMAGE_API }}:${{ github.sha }}
 
-  # ============ front image build + GHCR push (test-front gecince) ============
+  # ============ front image build + ECR push (test-front gecince) ============
   build-front:
     runs-on: ubuntu-latest
     needs: test-front
     steps:
       - uses: actions/checkout@v4
 
-      - name: GHCR'ye login ol
-        uses: docker/login-action@v3
+      # PR'larda push yok, AWS kimligi de gerekmiyor.
+      - name: AWS kimligi (sadece main)
+        if: github.event_name != 'pull_request'
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: ECR'a login ol (sadece main)
+        if: github.event_name != 'pull_request'
+        uses: aws-actions/amazon-ecr-login@v2
 
       # 1) Build + yerel daemon'a yukle (push YOK).
       - name: front image build (yerel, tarama icin)
@@ -145,30 +157,47 @@ jobs:
           # OS yamandi + npm runtime'dan silindi -> ENFORCE.
           exit-code: '1'
 
-      # 3) Tarama gecince (sadece main) GHCR'ye push.
-      - name: GHCR'ye push (sadece main)
+      # 3) Tarama gecince (sadece main) ECR'a push.
+      - name: ECR'a push (sadece main)
         if: github.event_name != 'pull_request'
         run: |
           docker push ${{ env.IMAGE_FRONT }}:latest
           docker push ${{ env.IMAGE_FRONT }}:${{ github.sha }}
 
   # ============ Sunucuya deploy (sadece main push'ta) ============
-  # Iki image de GHCR'ye gittikten SONRA sunucuya SSH ile baglanir,
-  # yeni image'lari ceker ve compose ile yeniden baslatir.
+  # Iki image de ECR'a gittikten SONRA sunucuya SSH ile baglanir, yeni image'lari ceker ve
+  # compose ile yeniden baslatir. Sunucuda kalici registry kimligi DURMAZ: 12 saatlik ECR jetonu
+  # SSH ile gider, is bitince logout. Compose dosyasinin ana kopyasi sunucuda; CI ona yazmaz.
   deploy:
     runs-on: ubuntu-latest
     needs: [build-api, build-front]
     if: github.ref == 'refs/heads/main'    # PR'larda deploy YOK
     steps:
+      - name: AWS kimligi
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: ECR jetonu
+        run: |
+          token=$(aws ecr get-login-password --region "$AWS_REGION")
+          echo "::add-mask::$token"
+          echo "ECR_TOKEN=$token" >> "$GITHUB_ENV"
+
       - name: Sunucuya SSH + guncelle
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_HOST }}        # sunucu IP veya domain
           username: ${{ secrets.SERVER_USER }}    # ssh kullanici adi
           key: ${{ secrets.SSH_PRIVATE_KEY }}     # deploy private key
+          envs: ECR_TOKEN,REGISTRY
           script: |
             set -e
+            echo "$ECR_TOKEN" | docker login --username AWS --password-stdin "$REGISTRY"
+            trap 'docker logout "$REGISTRY" >/dev/null 2>&1 || true' EXIT
             cd ${{ secrets.SERVER_PATH }}         # compose dosyasinin oldugu klasor
-            docker compose pull                   # GHCR'den yeni image'lari cek
+            docker compose pull api front         # ECR'dan yeni image'lari cek
             docker compose up -d                  # degisen servisleri yeniden baslat
             docker image prune -f                 # eski/danglig image'lari temizle

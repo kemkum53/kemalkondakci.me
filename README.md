@@ -24,7 +24,7 @@ fully Dockerized application I designed, built and run in production.
 - **Hardened admin login** — in-memory brute-force protection (per-IP) and
   security headers.
 - **Privacy-first analytics** — self-hosted [Umami](https://umami.is) (cookieless).
-- **CI/CD** — test → build → push to GHCR → deploy, on every push to `main`.
+- **CI/CD** — test → build → push to AWS ECR → deploy, on every push to `main`.
 
 ## Architecture
 
@@ -112,8 +112,8 @@ cd front && npm test                    # Vitest + Testing Library (component te
       ├─ test-api    (pytest)   ┐ parallel
       ├─ test-front  (vitest)   ┘
       │
-      ├─ build-api    ◀ needs: test-api    → image → GHCR
-      ├─ build-front  ◀ needs: test-front  → image → GHCR
+      ├─ build-api    ◀ needs: test-api    → image → ECR
+      ├─ build-front  ◀ needs: test-front  → image → ECR
       │
       └─ deploy       ◀ needs: builds       → SSH: docker compose pull && up -d
 ```
