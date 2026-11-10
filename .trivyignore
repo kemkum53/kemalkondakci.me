@@ -1,0 +1,6 @@
+# Accepted findings, each with its reason. Remove a line once a fixed version is available.
+
+# tinymce 7.x stored XSS: the fix exists only in 8.x (7-latest on npm is still 7.9.3, the
+# advisory's 7.9.4 is not published). The editor is used by the site owner alone, behind the
+# admin sign-in; moving to 8 is a major upgrade with a new licence setting. 2026-11-10.
+CVE-2026-116675
